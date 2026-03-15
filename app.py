@@ -28,7 +28,7 @@ margin-bottom:20px;
 # ---------- TITLE ---------- #
 
 st.title("💰 Personal Finance Advisor")
-
+st.info("This tool provides financial insights for educational purposes and is not financial advice.")
 st.write(
 "Analyze your finances and receive suggestions to improve financial health."
 )
