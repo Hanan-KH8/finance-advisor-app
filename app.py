@@ -140,6 +140,10 @@ if st.button("Save my budget"):
     supabase.table("budgets").insert(data).execute()
 
     st.success("Budget saved!")
+    
+except Exception as e:
+    
+st.error(f"Error: {e}")
 
 # ---------- LOAD DATA ---------- #
 
