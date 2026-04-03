@@ -127,21 +127,26 @@ year = st.number_input("Year", 2020, 2100, 2025)
 
 if st.button("Save my budget"):
 
-    data = {
-        "user_name": user_name,
-        "month": f"{month}-{year}",
-        "income": income,
-        "housing": housing,
-        "food": food,
-        "transport": transport,
-        "total_expenses": total_expenses
-    }
+    if user_name == "":
+        st.warning("Please enter your name")
 
-    supabase.table("budgets").insert(data).execute()
+    else:
+        data = {
+            "user_name": user_name,
+            "month": f"{month}-{year}",
+            "income": income,
+            "housing": housing,
+            "food": food,
+            "transport": transport,
+            "total_expenses": total_expenses
+        }
 
-    st.success("Budget saved!")
-        
-st.error(f"Error: {e}")
+        try:
+            supabase.table("budgets").insert(data).execute()
+            st.success("Budget saved!")
+
+        except Exception as e:
+            st.error(f"Error: {e}")
 
 # ---------- LOAD DATA ---------- #
 
