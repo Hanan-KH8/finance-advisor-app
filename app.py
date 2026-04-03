@@ -2,6 +2,22 @@ import streamlit as st
 import pandas as pd
 from supabase import create_client
 
+def ai_chat_response(user_input, income, expenses, savings):
+
+    savings_rate = (savings / income * 100) if income > 0 else 0
+
+    if "save" in user_input.lower():
+        return f"You currently save {savings_rate:.1f}% of your income. Try reducing restaurants or subscriptions."
+
+    elif "debt" in user_input.lower():
+        return "Focus on paying high-interest debt first before increasing investments."
+
+    elif "budget" in user_input.lower():
+        return "A healthy budget is roughly 50% needs, 30% wants, 20% savings."
+
+    else:
+        return "Focus on increasing savings and reducing unnecessary expenses."
+
 def generate_financial_advice(income, expenses, housing, food, transport, subscriptions):
 
     advice = []
@@ -105,6 +121,8 @@ with st.expander("💵 Income", expanded=True):
 
 income = job + bonus + child_support + other_support + tax_return + other_income
 
+st.success(f"Total Income: {income:,.0f} SEK")
+
 # ---------- HOUSING ---------- #
 
 with st.expander("🏠 Housing"):
@@ -118,6 +136,8 @@ with st.expander("🏠 Housing"):
     housing_other = st.number_input("Other housing", 0, 200000, 300)
 
 housing = mortgage + electricity + heating + maintenance + association + renovation + housing_other
+
+st.success(f"Total Housing: {housing:,.0f} SEK")
 
 # ---------- TRANSPORT ---------- #
 
@@ -133,6 +153,8 @@ with st.expander("🚗 Transport"):
 transport = transport_loan + fuel + parking + insurance + tax + transport_other
 st.write(f"Total Transport: {transport:,.0f} SEK")
 
+st.success(f"Total Transport: {transport:,.0f} SEK")
+
 # ---------- LIFESTYLE ---------- #
 
 with st.expander("🛍 Lifestyle"):
@@ -144,6 +166,8 @@ with st.expander("🛍 Lifestyle"):
     selfcare = st.number_input("Self-care", 0, 200000, 300)
 
 lifestyle = food + restaurants + entertainment + clothes + selfcare
+
+st.success(f"Total Lifestyle: {lifestyle:,.0f} SEK")
 
 # ---------- SUBSCRIPTIONS ---------- #
 
@@ -162,6 +186,8 @@ with st.expander("📱 Subscriptions"):
 
 Subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
 
+st.success(f"Total Subscriptions: {subscriptions:,.0f} SEK")
+
 # ---------- OTHER ---------- #
 
 with st.expander("✈️ Other"):
@@ -171,6 +197,8 @@ with st.expander("✈️ Other"):
     other = st.number_input("Other", 0, 200000, 1000)
 
 other_total = travel + charity + other
+
+st.success(f"Total Other: {other_total:,.0f} SEK")
 
 # ---------- TOTAL ---------- #
 
@@ -223,6 +251,25 @@ col1, col2, col3 = st.columns(3)
 col1.metric("Expenses", f"{total_expenses:,.0f} SEK")
 col2.metric("Remaining", f"{remaining:,.0f} SEK")
 col3.metric("Savings rate", f"{savings_rate:.1f}%")
+
+
+# ----------- chat UI ------------ #
+st.subheader("💬 AI Financial Chat")
+
+user_question = st.text_input("Ask a question about your finances")
+
+if user_question:
+
+    savings = income - total_expenses
+
+    response = ai_chat_response(
+        user_question,
+        income,
+        total_expenses,
+        savings
+    )
+
+    st.write("🤖", response)
 
 # ---------- SAVE DATA ---------- #
 
