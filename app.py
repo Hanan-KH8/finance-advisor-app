@@ -197,7 +197,7 @@ st.subheader("📂 Load Previous Budgets")
 
 if st.button("Load my data"):
 
-    result = supabase.table("budgets").select("*")..eq("email", user_email).execute()
+    result = supabase.table("budgets").select("*").eq("email", user_email).execute()
 
     df = pd.DataFrame(result.data)
 
