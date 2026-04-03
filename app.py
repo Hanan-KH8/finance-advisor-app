@@ -72,6 +72,7 @@ with st.expander("💵 Income", expanded=True):
     other_income = st.number_input("Other", 0, 200000, 0)
 
 income = job + bonus + child_support + other_support + tax_return + other_income
+st.write(f"Total Income: {Income:,.0f} SEK")
 
 # ---------- HOUSING ---------- #
 
@@ -113,6 +114,7 @@ with st.expander("🛍 Lifestyle"):
     selfcare = st.number_input("Self-care", 0, 200000, 300)
 
 lifestyle = food + restaurants + entertainment + clothes + selfcare
+st.write(f"Lifestyle: {Lifestyle:,.0f} SEK")
 
 # ---------- SUBSCRIPTIONS ---------- #
 
@@ -129,7 +131,8 @@ with st.expander("📱 Subscriptions"):
     games = st.number_input("Games", 0, 10000, 100)
     subs_other = st.number_input("Other subscriptions", 0, 10000, 100)
 
-subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
+Subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
+st.write(f"Subscriptions: {Subscriptions:,.0f} SEK")
 
 # ---------- OTHER ---------- #
 
@@ -140,10 +143,11 @@ with st.expander("✈️ Other"):
     other = st.number_input("Other", 0, 200000, 1000)
 
 other_total = travel + charity + other
+st.write(f"Other: {Other:,.0f} SEK")
 
 # ---------- TOTAL ---------- #
 
-total_expenses = housing + transport + lifestyle + subscriptions + other_total
+total_expenses = housing + transport + lifestyle + Subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
