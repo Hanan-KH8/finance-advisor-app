@@ -157,8 +157,23 @@ if st.button("Load my data"):
     result = supabase.table("budgets").select("*").eq("user_name", user_name).execute()
 
     df = pd.DataFrame(result.data)
-
+    st.dataframe(df.sort_values("month"))
     if not df.empty:
         st.dataframe(df)
 
-        st.line_chart(df[["income", "total_expenses"]])
+        df_sorted = df.sort_values("month")
+
+st.line_chart(
+    df_sorted.set_index("month")[["income", "total_expenses"]]
+)
+df["savings"] = df["income"] - df["total_expenses"]
+
+st.line_chart(
+    df_sorted.set_index("month")[["income", "total_expenses", "savings"]]
+)
+st.subheader("📊 Summary")
+
+st.write(f"Average income: {df['income'].mean():,.0f} SEK")
+st.write(f"Average expenses: {df['total_expenses'].mean():,.0f} SEK")
+st.write(f"Average savings: {(df['income'] - df['total_expenses']).mean():,.0f} SEK")
+
