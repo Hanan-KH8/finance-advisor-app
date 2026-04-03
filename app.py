@@ -2,6 +2,29 @@ import streamlit as st
 import pandas as pd
 from supabase import create_client
 
+# -------- Section cards ---------- #
+st.markdown("""
+<style>
+.card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+st.subheader("📊 Overview")
+
+# your metrics here
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# ------------------------ #
+
 def ai_chat_response(user_input, income, expenses, savings):
 
     savings_rate = (savings / income * 100) if income > 0 else 0
@@ -107,6 +130,24 @@ if not st.session_state.user:
 user_email = st.session_state.user.user.email
 
 st.success(f"Logged in as: {user_email}")
+
+# ---------- App tabs ------ #
+
+tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🎯 Goals", "💬 Advisor"])
+
+with tab1:
+    # Income
+    # Expenses
+    # Overview
+    # Charts
+    
+with tab2:
+    # Financial goal section here
+    
+with tab3:
+    # AI advisor + chat
+    
+
 
 # ---------- INCOME ---------- #
 
@@ -270,6 +311,33 @@ if user_question:
     )
 
     st.write("🤖", response)
+
+# ---------- Goal ------------- #
+
+st.subheader("🎯 Financial Goal")
+
+goal_amount = st.number_input("Goal amount (SEK)", 0, 1000000, 50000)
+goal_months = st.number_input("Timeframe (months)", 1, 120, 12)
+
+monthly_savings_needed = goal_amount / goal_months
+
+current_savings = income - total_expenses
+
+st.write(f"💡 You need to save {monthly_savings_needed:,.0f} SEK/month")
+
+if current_savings >= monthly_savings_needed:
+    st.success("✅ You are on track to reach your goal!")
+else:
+    gap = monthly_savings_needed - current_savings
+    st.warning(f"⚠️ You need an extra {gap:,.0f} SEK/month to reach your goal")
+
+# ---------- Progress ------------ #
+
+progress = min(current_savings / monthly_savings_needed, 1.0)
+
+st.progress(progress)
+
+st.write(f"Progress: {progress*100:.1f}%")
 
 # ---------- SAVE DATA ---------- #
 
