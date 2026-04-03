@@ -186,7 +186,7 @@ with st.expander("📱 Subscriptions"):
 
 Subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
 
-st.success(f"Total Subscriptions: {subscriptions:,.0f} SEK")
+st.success(f"Total Subscriptions: {Subscriptions:,.0f} SEK")
 
 # ---------- OTHER ---------- #
 
