@@ -149,7 +149,9 @@ if st.button("Save my budget"):
             st.error(f"Error: {e}")
 
 # ---------- LOAD DATA ---------- #
-
+if user_name == "":
+    st.warning("Enter your name first")
+    
 st.subheader("📂 Load Previous Budgets")
 
 if st.button("Load my data"):
@@ -157,23 +159,36 @@ if st.button("Load my data"):
     result = supabase.table("budgets").select("*").eq("user_name", user_name).execute()
 
     df = pd.DataFrame(result.data)
-    st.dataframe(df.sort_values("month"))
-    if not df.empty:
-        st.dataframe(df)
 
+    if not df.empty:
+
+        # Sort data
         df_sorted = df.sort_values("month")
 
-st.line_chart(
-    df_sorted.set_index("month")[["income", "total_expenses"]]
-)
-df["savings"] = df["income"] - df["total_expenses"]
+        # Show table
+        st.dataframe(df_sorted)
 
-st.line_chart(
-    df_sorted.set_index("month")[["income", "total_expenses", "savings"]]
-)
-st.subheader("📊 Summary")
+        # Add savings column
+        df_sorted["savings"] = df_sorted["income"] - df_sorted["total_expenses"]
 
-st.write(f"Average income: {df['income'].mean():,.0f} SEK")
-st.write(f"Average expenses: {df['total_expenses'].mean():,.0f} SEK")
-st.write(f"Average savings: {(df['income'] - df['total_expenses']).mean():,.0f} SEK")
+        # 📈 Chart 1
+        st.subheader("📈 Income vs Expenses")
+        st.line_chart(
+            df_sorted.set_index("month")[["income", "total_expenses"]]
+        )
 
+        # 📈 Chart 2
+        st.subheader("💰 Savings Trend")
+        st.line_chart(
+            df_sorted.set_index("month")[["income", "total_expenses", "savings"]]
+        )
+
+        # 📊 Summary
+        st.subheader("📊 Summary")
+
+        st.write(f"Average income: {df_sorted['income'].mean():,.0f} SEK")
+        st.write(f"Average expenses: {df_sorted['total_expenses'].mean():,.0f} SEK")
+        st.write(f"Average savings: {df_sorted['savings'].mean():,.0f} SEK")
+
+    else:
+        st.warning("No data found for this user.")
