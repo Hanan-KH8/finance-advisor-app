@@ -1,11 +1,21 @@
 import streamlit as st
 import pandas as pd
+from supabase import create_client
+
+# ---------- CONFIG ---------- #
 
 st.set_page_config(page_title="Finance Advisor", layout="centered")
 
 st.title("💰 Personal Finance Advisor")
 
 st.info("This tool provides financial insights for educational purposes and is not financial advice.")
+
+# ---------- SUPABASE ---------- #
+
+SUPABASE_URL = "https://rwubgrllaaatrwqydqdg.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3dWJncmxsYWFhdHJ3cXlkcWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTAxMzYsImV4cCI6MjA4OTI2NjEzNn0.95AmKL8w6s78eTFdo2YYBFz6bTzNaljxEPGyFmwfrcA"
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ---------- INCOME ---------- #
 
@@ -16,7 +26,7 @@ with st.expander("💵 Income", expanded=True):
     child_support = st.number_input("Child support", 0, 200000, 0)
     other_support = st.number_input("Other support", 0, 200000, 0)
     tax_return = st.number_input("Tax return", 0, 200000, 0)
-    other_income = st.number_input("Other income", 0, 200000, 0)
+    other_income = st.number_input("Other", 0, 200000, 0)
 
 income = job + bonus + child_support + other_support + tax_return + other_income
 
@@ -33,6 +43,7 @@ with st.expander("🏠 Housing"):
     housing_other = st.number_input("Other housing", 0, 200000, 300)
 
 housing = mortgage + electricity + heating + maintenance + association + renovation + housing_other
+st.write(f"Total Housing: {housing:,.0f} SEK")
 
 # ---------- TRANSPORT ---------- #
 
@@ -46,16 +57,7 @@ with st.expander("🚗 Transport"):
     transport_other = st.number_input("Other transport", 0, 200000, 200)
 
 transport = transport_loan + fuel + parking + insurance + tax + transport_other
-
-# ---------- LOANS ---------- #
-
-with st.expander("💳 Loans"):
-
-    personal = st.number_input("Personal loan", 0, 200000, 1000)
-    credits = st.number_input("Credits", 0, 200000, 500)
-    loans_other = st.number_input("Other loans", 0, 200000, 200)
-
-loans = personal + credits + loans_other
+st.write(f"Total Transport: {transport:,.0f} SEK")
 
 # ---------- LIFESTYLE ---------- #
 
@@ -98,7 +100,7 @@ other_total = travel + charity + other
 
 # ---------- TOTAL ---------- #
 
-total_expenses = housing + transport + loans + lifestyle + subscriptions + other_total
+total_expenses = housing + transport + lifestyle + subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
@@ -106,6 +108,50 @@ st.subheader("📊 Overview")
 
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Total expenses", f"{total_expenses:,.0f} SEK")
+col1.metric("Expenses", f"{total_expenses:,.0f} SEK")
 col2.metric("Remaining", f"{remaining:,.0f} SEK")
 col3.metric("Savings rate", f"{savings_rate:.1f}%")
+
+# ---------- SAVE DATA ---------- #
+
+st.subheader("💾 Save Budget")
+
+user_name = st.text_input("Your name")
+
+month = st.selectbox("Month", [
+    "Jan","Feb","Mar","Apr","May","Jun",
+    "Jul","Aug","Sep","Oct","Nov","Dec"
+])
+
+year = st.number_input("Year", 2020, 2100, 2025)
+
+if st.button("Save my budget"):
+
+    data = {
+        "user_name": user_name,
+        "month": f"{month}-{year}",
+        "income": income,
+        "housing": housing,
+        "food": food,
+        "transport": transport,
+        "total_expenses": total_expenses
+    }
+
+    supabase.table("budgets").insert(data).execute()
+
+    st.success("Budget saved!")
+
+# ---------- LOAD DATA ---------- #
+
+st.subheader("📂 Load Previous Budgets")
+
+if st.button("Load my data"):
+
+    result = supabase.table("budgets").select("*").eq("user_name", user_name).execute()
+
+    df = pd.DataFrame(result.data)
+
+    if not df.empty:
+        st.dataframe(df)
+
+        st.line_chart(df[["income", "total_expenses"]])
