@@ -167,7 +167,7 @@ year = st.number_input("Year", 2020, 2100, 2025)
 
 if st.button("Save my budget"):
 
-try:
+    try:
         data = {
             "email": user_email,
             "month": f"{month}-{year}",
@@ -181,7 +181,7 @@ try:
         supabase.table("budgets").insert(data).execute()
         st.success("Budget saved!")
 
-except Exception as e:
+    except Exception as e:
         st.error(f"Error: {e}")
 
 # ---------- LOAD DATA ---------- #
