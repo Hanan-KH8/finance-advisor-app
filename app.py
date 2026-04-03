@@ -188,7 +188,7 @@ advice = generate_financial_advice(
     housing,
     food,
     transport,
-    subscriptions
+    Subscriptions
 )
 
 for tip in advice:
