@@ -210,7 +210,7 @@ st.write(f"Improvement: {(new_savings - remaining):,.0f} SEK")
 st.subheader("📊 Needs vs Wants")
 
 needs = housing + food + transport
-wants = restaurants + entertainment + subscriptions
+wants = restaurants + entertainment + Subscriptions
 savings = remaining
 
 if income > 0:
