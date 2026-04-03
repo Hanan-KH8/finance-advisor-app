@@ -72,7 +72,6 @@ with st.expander("💵 Income", expanded=True):
     other_income = st.number_input("Other", 0, 200000, 0)
 
 income = job + bonus + child_support + other_support + tax_return + other_income
-st.write(f"Total Income: {Income:,.0f} SEK")
 
 # ---------- HOUSING ---------- #
 
@@ -87,7 +86,6 @@ with st.expander("🏠 Housing"):
     housing_other = st.number_input("Other housing", 0, 200000, 300)
 
 housing = mortgage + electricity + heating + maintenance + association + renovation + housing_other
-st.write(f"Total Housing: {housing:,.0f} SEK")
 
 # ---------- TRANSPORT ---------- #
 
