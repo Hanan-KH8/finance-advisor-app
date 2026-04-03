@@ -189,9 +189,7 @@ if st.button("Save my budget"):
             st.error(f"Error: {e}")
 
 # ---------- LOAD DATA ---------- #
-if user_name == "":
-    st.warning("Enter your name first")
-    
+  
 st.subheader("📂 Load Previous Budgets")
 
 if st.button("Load my data"):
