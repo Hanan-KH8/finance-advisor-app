@@ -2,6 +2,38 @@ import streamlit as st
 import pandas as pd
 from supabase import create_client
 
+def generate_financial_advice(income, expenses, housing, food, transport, subscriptions):
+
+    advice = []
+
+    savings = income - expenses
+    savings_rate = (savings / income * 100) if income > 0 else 0
+    housing_ratio = housing / income if income > 0 else 0
+
+    if savings_rate < 5:
+        advice.append("⚠️ Your savings rate is very low.")
+    elif savings_rate < 15:
+        advice.append("👍 Try increasing savings toward 20%.")
+    else:
+        advice.append("✅ Strong savings rate.")
+
+    if housing_ratio > 0.4:
+        advice.append("🏠 Housing costs are high (>40%).")
+
+    if food > income * 0.15:
+        advice.append("🍔 Food spending is high.")
+
+    if transport > income * 0.1:
+        advice.append("🚗 Transport costs are high.")
+
+    if subscriptions > 500:
+        advice.append("📱 Review subscriptions.")
+
+    if savings > 0:
+        advice.append(f"💰 You could save {savings*12:,.0f} SEK/year.")
+
+    return advice
+
 # ---------- CONFIG ---------- #
 
 st.set_page_config(page_title="Finance Advisor", layout="centered")
@@ -147,6 +179,44 @@ remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
 st.subheader("📊 Overview")
+
+st.subheader("🤖 AI Financial Advisor")
+
+advice = generate_financial_advice(
+    income,
+    total_expenses,
+    housing,
+    food,
+    transport,
+    subscriptions
+)
+
+for tip in advice:
+    st.write(tip)
+
+st.subheader("🔮 What-if Simulator")
+
+reduction = st.slider("Reduce restaurants spending (%)", 0, 50, 10)
+
+new_restaurants = restaurants * (1 - reduction/100)
+
+new_expenses = total_expenses - restaurants + new_restaurants
+new_savings = income - new_expenses
+
+st.write(f"New savings: {new_savings:,.0f} SEK/month")
+
+st.write(f"Improvement: {(new_savings - remaining):,.0f} SEK")
+
+st.subheader("📊 Needs vs Wants")
+
+needs = housing + food + transport
+wants = restaurants + entertainment + subscriptions
+savings = remaining
+
+if income > 0:
+    st.write(f"Needs: {needs/income*100:.1f}%")
+    st.write(f"Wants: {wants/income*100:.1f}%")
+    st.write(f"Savings: {savings/income*100:.1f}%")
 
 col1, col2, col3 = st.columns(3)
 
