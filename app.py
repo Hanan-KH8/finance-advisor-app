@@ -17,6 +17,49 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# ---------- LOGIN SYSTEM ---------- #
+
+st.subheader("🔐 Login")
+
+login_mode = st.radio("Choose", ["Login", "Sign Up"])
+
+email = st.text_input("Email")
+password = st.text_input("Password", type="password")
+
+if "user" not in st.session_state:
+    st.session_state.user = None
+
+if login_mode == "Sign Up":
+    if st.button("Create account"):
+        try:
+            user = supabase.auth.sign_up({
+                "email": email,
+                "password": password
+            })
+            st.success("Account created! Please log in.")
+        except Exception as e:
+            st.error(e)
+
+elif login_mode == "Login":
+    if st.button("Login"):
+        try:
+            user = supabase.auth.sign_in_with_password({
+                "email": email,
+                "password": password
+            })
+            st.session_state.user = user
+            st.success("Logged in!")
+        except Exception as e:
+            st.error(e)
+
+if not st.session_state.user:
+    st.warning("Please log in to continue")
+    st.stop()
+    
+user_email = st.session_state.user.user.email
+
+st.success(f"Logged in as: {user_email}")
+
 # ---------- INCOME ---------- #
 
 with st.expander("💵 Income", expanded=True):
@@ -116,8 +159,6 @@ col3.metric("Savings rate", f"{savings_rate:.1f}%")
 
 st.subheader("💾 Save Budget")
 
-user_name = st.text_input("Your name")
-
 month = st.selectbox("Month", [
     "Jan","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec"
@@ -132,7 +173,7 @@ if st.button("Save my budget"):
 
     else:
         data = {
-            "user_name": user_name,
+            "email": user_email,
             "month": f"{month}-{year}",
             "income": income,
             "housing": housing,
@@ -156,7 +197,7 @@ st.subheader("📂 Load Previous Budgets")
 
 if st.button("Load my data"):
 
-    result = supabase.table("budgets").select("*").eq("user_name", user_name).execute()
+    result = supabase.table("budgets").select("*")..eq("email", user_email).execute()
 
     df = pd.DataFrame(result.data)
 
