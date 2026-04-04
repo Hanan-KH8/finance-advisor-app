@@ -201,19 +201,32 @@ with tab1:
         st.write(f"Wants: {wants/income*100:.1f}%")
         st.write(f"Savings: {savings/income*100:.1f}%")
 
-# ---------- GOALS ---------- #
-with tab2:
-    st.subheader("🎯 Goal")
+# ---------- Goal ------------- #
 
-    goal = st.number_input("Goal (SEK)", 0, 1000000, 50000)
-    months = st.number_input("Months", 1, 120, 12)
+st.subheader("🎯 Financial Goal")
 
-    needed = goal / months
+goal_amount = st.number_input("Goal amount (SEK)", 0, 1000000, 50000)
+goal_months = st.number_input("Timeframe (months)", 1, 120, 12)
 
-    if remaining >= needed:
-        st.success("On track")
-    else:
-        st.warning("Not on track")
+monthly_savings_needed = goal_amount / goal_months
+
+current_savings = income - total_expenses
+
+st.write(f"💡 You need to save {monthly_savings_needed:,.0f} SEK/month")
+
+if current_savings >= monthly_savings_needed:
+    st.success("✅ You are on track to reach your goal!")
+else:
+    gap = monthly_savings_needed - current_savings
+    st.warning(f"⚠️ You need an extra {gap:,.0f} SEK/month to reach your goal")
+
+# ---------- Progress ------------ #
+
+progress = min(current_savings / monthly_savings_needed, 1.0)
+
+st.progress(progress)
+
+st.write(f"Progress: {progress*100:.1f}%")
 
 # ---------- ADVISOR ---------- #
 with tab3:
@@ -227,13 +240,19 @@ with tab3:
     if question:
         st.write("🤖", chat_response(question.lower()))
 
-# ---------- SAVE ---------- #
-st.subheader("💾 Save")
+# ---------- SAVE DATA ---------- #
 
-month = st.selectbox("Month", ["Jan","Feb","Mar","Apr"])
+st.subheader("💾 Save Budget")
+
+month = st.selectbox("Month", [
+    "Jan","Feb","Mar","Apr","May","Jun",
+    "Jul","Aug","Sep","Oct","Nov","Dec"
+])
+
 year = st.number_input("Year", 2020, 2100, 2025)
 
-if st.button("Save"):
+if st.button("Save my budget"):
+
     try:
         data = {
             "email": user_email,
@@ -244,18 +263,52 @@ if st.button("Save"):
             "transport": transport,
             "total_expenses": total_expenses
         }
+
         supabase.table("budgets").insert(data).execute()
-        st.success("Saved")
+        st.success("Budget saved!")
+
     except Exception as e:
-        st.error(e)
+        st.error(f"Error: {e}")
 
-# ---------- LOAD ---------- #
-st.subheader("📂 Load")
+# ---------- LOAD DATA ---------- #
+  
+st.subheader("📂 Load Previous Budgets")
 
-if st.button("Load"):
+if st.button("Load my data"):
+
     result = supabase.table("budgets").select("*").eq("email", user_email).execute()
+
     df = pd.DataFrame(result.data)
 
     if not df.empty:
-        st.dataframe(df)
-        st.line_chart(df[["income", "total_expenses"]])
+
+        # Sort data
+        df_sorted = df.sort_values("month")
+
+        # Show table
+        st.dataframe(df_sorted)
+
+        # Add savings column
+        df_sorted["savings"] = df_sorted["income"] - df_sorted["total_expenses"]
+
+        # 📈 Chart 1
+        st.subheader("📈 Income vs Expenses")
+        st.line_chart(
+            df_sorted.set_index("month")[["income", "total_expenses"]]
+        )
+
+        # 📈 Chart 2
+        st.subheader("💰 Savings Trend")
+        st.line_chart(
+            df_sorted.set_index("month")[["income", "total_expenses", "savings"]]
+        )
+
+        # 📊 Summary
+        st.subheader("📊 Summary")
+
+        st.write(f"Average income: {df_sorted['income'].mean():,.0f} SEK")
+        st.write(f"Average expenses: {df_sorted['total_expenses'].mean():,.0f} SEK")
+        st.write(f"Average savings: {df_sorted['savings'].mean():,.0f} SEK")
+
+    else:
+        st.warning("No data found for this user.")
