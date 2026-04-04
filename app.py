@@ -13,6 +13,57 @@ import streamlit as st
 import pandas as pd
 from supabase import create_client
 
+# ---------- SUPABASE ---------- #
+
+SUPABASE_URL = "https://rwubgrllaaatrwqydqdg.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3dWJncmxsYWFhdHJ3cXlkcWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTAxMzYsImV4cCI6MjA4OTI2NjEzNn0.95AmKL8w6s78eTFdo2YYBFz6bTzNaljxEPGyFmwfrcA"
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# ---------- LOGIN SYSTEM ---------- #
+
+st.subheader("🔐 Login")
+
+login_mode = st.radio("Choose", ["Login", "Sign Up"])
+
+email = st.text_input("Email")
+password = st.text_input("Password", type="password")
+
+if "user" not in st.session_state:
+    st.session_state.user = None
+
+if login_mode == "Sign Up":
+    if st.button("Create account"):
+        try:
+            user = supabase.auth.sign_up({
+                "email": email,
+                "password": password
+            })
+            st.success("Account created! Please log in.")
+        except Exception as e:
+            st.error(e)
+
+elif login_mode == "Login":
+    if st.button("Login"):
+        try:
+            user = supabase.auth.sign_in_with_password({
+                "email": email,
+                "password": password
+            })
+            st.session_state.user = user
+            st.success("Logged in!")
+        except Exception as e:
+            st.error(e)
+
+if not st.session_state.user:
+    st.warning("Please log in to continue")
+    st.stop()
+    
+user_email = st.session_state.user.user.email
+
+st.success(f"Logged in as: {user_email}")
+
+
 # -------- Section cards ---------- #
 st.markdown("""
 <style>
@@ -83,56 +134,6 @@ def generate_financial_advice(income, expenses, housing, food, transport, subscr
         advice.append(f"💰 You could save {savings*12:,.0f} SEK/year.")
 
     return advice
-
-# ---------- SUPABASE ---------- #
-
-SUPABASE_URL = "https://rwubgrllaaatrwqydqdg.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3dWJncmxsYWFhdHJ3cXlkcWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTAxMzYsImV4cCI6MjA4OTI2NjEzNn0.95AmKL8w6s78eTFdo2YYBFz6bTzNaljxEPGyFmwfrcA"
-
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-# ---------- LOGIN SYSTEM ---------- #
-
-st.subheader("🔐 Login")
-
-login_mode = st.radio("Choose", ["Login", "Sign Up"])
-
-email = st.text_input("Email")
-password = st.text_input("Password", type="password")
-
-if "user" not in st.session_state:
-    st.session_state.user = None
-
-if login_mode == "Sign Up":
-    if st.button("Create account"):
-        try:
-            user = supabase.auth.sign_up({
-                "email": email,
-                "password": password
-            })
-            st.success("Account created! Please log in.")
-        except Exception as e:
-            st.error(e)
-
-elif login_mode == "Login":
-    if st.button("Login"):
-        try:
-            user = supabase.auth.sign_in_with_password({
-                "email": email,
-                "password": password
-            })
-            st.session_state.user = user
-            st.success("Logged in!")
-        except Exception as e:
-            st.error(e)
-
-if not st.session_state.user:
-    st.warning("Please log in to continue")
-    st.stop()
-    
-user_email = st.session_state.user.user.email
-
-st.success(f"Logged in as: {user_email}")
 
 # ---------- INCOME ---------- #
 
