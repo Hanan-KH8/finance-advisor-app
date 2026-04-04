@@ -51,6 +51,8 @@ st.success(f"Logged in as: {user_email}")
 
 # ---------- INCOME ---------- #
 
+with st.expander("💵 Income", expanded=True):
+
     job = st.number_input("Job", 0, 200000, 25000)
     bonus = st.number_input("Bonus / commission", 0, 200000, 0)
     child_support = st.number_input("Child support", 0, 200000, 0)
