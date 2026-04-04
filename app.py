@@ -142,13 +142,6 @@ other_total = travel + charity + other
 
 st.success(f"Total Other: {other_total:,.0f} SEK")
 
-
-# ---------- CALCULATIONS ---------- #
-
-total_expenses = housing + transport + lifestyle + subscriptions
-remaining = income - total_expenses
-savings_rate = (remaining / income * 100) if income > 0 else 0
-
 # ---------- TOTAL ---------- #
 
 total_expenses = housing + transport + lifestyle + Subscriptions + other_total
