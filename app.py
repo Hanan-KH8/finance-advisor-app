@@ -113,7 +113,7 @@ st.success(f"Total Lifestyle: {lifestyle:,.0f} SEK")
 
 # ---------- SUBSCRIPTIONS ---------- #
 
-with st.expander("📱 Subscriptions"):
+with st.expander("📱 subscriptions"):
 
     phone = st.number_input("Phone", 0, 10000, 300)
     internet = st.number_input("Internet", 0, 10000, 400)
@@ -124,11 +124,11 @@ with st.expander("📱 Subscriptions"):
     streaming = st.number_input("Streaming services", 0, 10000, 200)
     music = st.number_input("Music", 0, 10000, 100)
     games = st.number_input("Games", 0, 10000, 100)
-    subs_other = st.number_input("Other Subscriptions", 0, 10000, 100)
+    subs_other = st.number_input("Other subscriptions", 0, 10000, 100)
 
-Subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
+subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
 
-st.success(f"Total Subscriptions: {Subscriptions:,.0f} SEK")
+st.success(f"Total subscriptions: {subscriptions:,.0f} SEK")
 
 # ---------- OTHER ---------- #
 
@@ -144,7 +144,7 @@ st.success(f"Total Other: {other_total:,.0f} SEK")
 
 # ---------- TOTAL ---------- #
 
-total_expenses = housing + transport + lifestyle + Subscriptions + other_total
+total_expenses = housing + transport + lifestyle + subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
@@ -176,6 +176,30 @@ with tab1:
     col1.metric("Income", f"{income:,.0f}")
     col2.metric("Expenses", f"{total_expenses:,.0f}")
     col3.metric("Savings", f"{remaining:,.0f}")
+
+    # ---------- WHAT-IF SIMULATOR ---------- #
+    st.subheader("🔮 What-if Simulator")
+
+    reduction = st.slider("Reduce restaurants spending (%)", 0, 50, 10)
+
+    new_restaurants = restaurants * (1 - reduction / 100)
+    new_expenses = total_expenses - restaurants + new_restaurants
+    new_savings = income - new_expenses
+
+    st.write(f"New savings: {new_savings:,.0f} SEK/month")
+    st.write(f"Improvement: {(new_savings - remaining):,.0f} SEK")
+
+    # ---------- NEEDS VS WANTS ---------- #
+    st.subheader("📊 Needs vs Wants")
+
+    needs = housing + food + transport
+    wants = restaurants + entertainment + subscriptions
+    savings = remaining
+
+    if income > 0:
+        st.write(f"Needs: {needs/income*100:.1f}%")
+        st.write(f"Wants: {wants/income*100:.1f}%")
+        st.write(f"Savings: {savings/income*100:.1f}%")
 
 # ---------- GOALS ---------- #
 with tab2:
