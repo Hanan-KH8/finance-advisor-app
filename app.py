@@ -49,6 +49,21 @@ if not st.session_state.user:
 user_email = st.session_state.user.user.email
 st.success(f"Logged in as: {user_email}")
 
+st.subheader("👨‍👩‍👧 Household Profile")
+
+household_type = st.radio("Household type", ["Single", "Family"])
+
+if household_type == "Single":
+    members = 1
+    ages = [st.number_input("Your age", 0, 100, 30)]
+else:
+    members = st.number_input("Number of family members", 1, 10, 3)
+    ages = []
+
+    for i in range(members):
+        age = st.number_input(f"Age of member {i+1}", 0, 100, 30)
+        ages.append(age)
+
 # ---------- INCOME ---------- #
 
 with st.expander("💵 Income", expanded=True):
@@ -148,7 +163,30 @@ total_expenses = housing + transport + lifestyle + subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
+#--------- Konsumentverket -------- #
 
+def get_reference_cost(ages):
+    total = 0
+
+    for age in ages:
+        if age < 6:
+            total += 3000
+        elif age < 18:
+            total += 4000
+        else:
+            total += 5000
+
+    return total
+
+#--------- Frequency Converter -------- #
+
+def monthly_value(amount, frequency):
+    if frequency == "Monthly":
+        return amount
+    elif frequency == "Annual":
+        return amount / 12
+    elif frequency == "Occasional":
+        return amount / 12
 # ---------- AI FUNCTIONS ---------- #
 
 def generate_advice():
