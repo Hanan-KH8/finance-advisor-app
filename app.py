@@ -148,51 +148,6 @@ total_expenses = housing + transport + lifestyle + Subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
-st.subheader("📊 Overview")
-
-st.subheader("🤖 AI Financial Advisor")
-
-advice = generate_financial_advice(
-    income,
-    total_expenses,
-    housing,
-    food,
-    transport,
-    Subscriptions
-)
-
-for tip in advice:
-    st.write(tip)
-
-st.subheader("🔮 What-if Simulator")
-
-reduction = st.slider("Reduce restaurants spending (%)", 0, 50, 10)
-
-new_restaurants = restaurants * (1 - reduction/100)
-
-new_expenses = total_expenses - restaurants + new_restaurants
-new_savings = income - new_expenses
-
-st.write(f"New savings: {new_savings:,.0f} SEK/month")
-
-st.write(f"Improvement: {(new_savings - remaining):,.0f} SEK")
-
-st.subheader("📊 Needs vs Wants")
-
-needs = housing + food + transport
-wants = restaurants + entertainment + Subscriptions
-savings = remaining
-
-if income > 0:
-    st.write(f"Needs: {needs/income*100:.1f}%")
-    st.write(f"Wants: {wants/income*100:.1f}%")
-    st.write(f"Savings: {savings/income*100:.1f}%")
-
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Expenses", f"{total_expenses:,.0f} SEK")
-col2.metric("Remaining", f"{remaining:,.0f} SEK")
-col3.metric("Savings rate", f"{savings_rate:.1f}%")
 
 # ---------- AI FUNCTIONS ---------- #
 
