@@ -132,20 +132,53 @@ user_email = st.session_state.user.user.email
 st.success(f"Logged in as: {user_email}")
 
 # ---------- App tabs ------ #
-
 tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🎯 Goals", "💬 Advisor"])
 
+# ---------- TAB 1: DASHBOARD ---------- #
 with tab1:
-    # Income
-    # Expenses
-    # Overview
-    # Charts
-    
+
+    st.subheader("📊 Dashboard")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("Income", f"{income:,.0f}")
+    col2.metric("Expenses", f"{total_expenses:,.0f}")
+    col3.metric("Savings", f"{(income-total_expenses):,.0f}")
+
+# ---------- TAB 2: GOALS ---------- #
 with tab2:
-    # Financial goal section here
-    
+
+    st.subheader("🎯 Financial Goal")
+
+    goal_amount = st.number_input("Goal amount (SEK)", 0, 1000000, 50000)
+    goal_months = st.number_input("Timeframe (months)", 1, 120, 12)
+
+    monthly_savings_needed = goal_amount / goal_months
+    current_savings = income - total_expenses
+
+    st.write(f"You need to save {monthly_savings_needed:,.0f} SEK/month")
+
+    if current_savings >= monthly_savings_needed:
+        st.success("On track!")
+    else:
+        st.warning("Not on track")
+
+# ---------- TAB 3: ADVISOR ---------- #
 with tab3:
-    # AI advisor + chat
+
+    st.subheader("🤖 AI Advisor")
+
+    advice = generate_financial_advice(
+        income,
+        total_expenses,
+        housing,
+        food,
+        transport,
+        subscriptions
+    )
+
+    for tip in advice:
+        st.write(tip)
     
 
 
