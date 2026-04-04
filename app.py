@@ -1,3 +1,14 @@
+
+# ---------- CONFIG ---------- #
+
+st.set_page_config(page_title="Finance Advisor", layout="centered")
+
+st.title("💰 Personal Finance Advisor")
+
+st.info("This tool provides financial insights for educational purposes and is not financial advice.")
+
+#----------- import --------- #
+
 import streamlit as st
 import pandas as pd
 from supabase import create_client
@@ -73,14 +84,6 @@ def generate_financial_advice(income, expenses, housing, food, transport, subscr
 
     return advice
 
-# ---------- CONFIG ---------- #
-
-st.set_page_config(page_title="Finance Advisor", layout="centered")
-
-st.title("💰 Personal Finance Advisor")
-
-st.info("This tool provides financial insights for educational purposes and is not financial advice.")
-
 # ---------- SUPABASE ---------- #
 
 SUPABASE_URL = "https://rwubgrllaaatrwqydqdg.supabase.co"
@@ -130,57 +133,6 @@ if not st.session_state.user:
 user_email = st.session_state.user.user.email
 
 st.success(f"Logged in as: {user_email}")
-
-# ---------- App tabs ------ #
-tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🎯 Goals", "💬 Advisor"])
-
-# ---------- TAB 1: DASHBOARD ---------- #
-with tab1:
-
-    st.subheader("📊 Dashboard")
-
-    col1, col2, col3 = st.columns(3)
-
-    col1.metric("Income", f"{income:,.0f}")
-    col2.metric("Expenses", f"{total_expenses:,.0f}")
-    col3.metric("Savings", f"{(income-total_expenses):,.0f}")
-
-# ---------- TAB 2: GOALS ---------- #
-with tab2:
-
-    st.subheader("🎯 Financial Goal")
-
-    goal_amount = st.number_input("Goal amount (SEK)", 0, 1000000, 50000)
-    goal_months = st.number_input("Timeframe (months)", 1, 120, 12)
-
-    monthly_savings_needed = goal_amount / goal_months
-    current_savings = income - total_expenses
-
-    st.write(f"You need to save {monthly_savings_needed:,.0f} SEK/month")
-
-    if current_savings >= monthly_savings_needed:
-        st.success("On track!")
-    else:
-        st.warning("Not on track")
-
-# ---------- TAB 3: ADVISOR ---------- #
-with tab3:
-
-    st.subheader("🤖 AI Advisor")
-
-    advice = generate_financial_advice(
-        income,
-        total_expenses,
-        housing,
-        food,
-        transport,
-        subscriptions
-    )
-
-    for tip in advice:
-        st.write(tip)
-    
-
 
 # ---------- INCOME ---------- #
 
@@ -326,25 +278,55 @@ col1.metric("Expenses", f"{total_expenses:,.0f} SEK")
 col2.metric("Remaining", f"{remaining:,.0f} SEK")
 col3.metric("Savings rate", f"{savings_rate:.1f}%")
 
+# ---------- App tabs ------ #
+tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🎯 Goals", "💬 Advisor"])
 
-# ----------- chat UI ------------ #
-st.subheader("💬 AI Financial Chat")
+# ---------- TAB 1: DASHBOARD ---------- #
+with tab1:
 
-user_question = st.text_input("Ask a question about your finances")
+    st.subheader("📊 Dashboard")
 
-if user_question:
+    col1, col2, col3 = st.columns(3)
 
-    savings = income - total_expenses
+    col1.metric("Income", f"{income:,.0f}")
+    col2.metric("Expenses", f"{total_expenses:,.0f}")
+    col3.metric("Savings", f"{(income-total_expenses):,.0f}")
 
-    response = ai_chat_response(
-        user_question,
+# ---------- TAB 2: GOALS ---------- #
+with tab2:
+
+    st.subheader("🎯 Financial Goal")
+
+    goal_amount = st.number_input("Goal amount (SEK)", 0, 1000000, 50000)
+    goal_months = st.number_input("Timeframe (months)", 1, 120, 12)
+
+    monthly_savings_needed = goal_amount / goal_months
+    current_savings = income - total_expenses
+
+    st.write(f"You need to save {monthly_savings_needed:,.0f} SEK/month")
+
+    if current_savings >= monthly_savings_needed:
+        st.success("On track!")
+    else:
+        st.warning("Not on track")
+
+# ---------- TAB 3: ADVISOR ---------- #
+with tab3:
+
+    st.subheader("🤖 AI Advisor")
+
+    advice = generate_financial_advice(
         income,
         total_expenses,
-        savings
+        housing,
+        food,
+        transport,
+        subscriptions
     )
 
-    st.write("🤖", response)
-
+    for tip in advice:
+        st.write(tip)
+    
 # ---------- Goal ------------- #
 
 st.subheader("🎯 Financial Goal")
