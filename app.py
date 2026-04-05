@@ -163,7 +163,7 @@ loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
 
 st.success(f"Total Loans: {loans:,.0f} SEK")
 
-loan_items =[
+loans_items =[
     (mortgage_loan, mortgage_freq),
     (car_loan, car_freq),
     (personal_loan, personal_freq),
