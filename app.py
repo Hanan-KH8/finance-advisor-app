@@ -78,8 +78,20 @@ def monthly_value(amount, frequency):
         return amount
     elif frequency == "Annual":
         return amount / 12
-    elif frequency == "Occasional":
+    else:
         return amount / 12
+
+
+def input_with_frequency(label, key, default=0):
+    amount = st.number_input(label, 0, 200000, default, key=f"{key}_amount")
+
+    freq = st.selectbox(
+        f"{label} frequency",
+        ["Monthly", "Annual", "Occasional"],
+        key=f"{key}_freq"
+    )
+
+    return monthly_value(amount, freq)
         
 # ---------- INCOME ---------- #
 
