@@ -94,110 +94,148 @@ def input_with_frequency(label, key, default=0):
     return monthly_value(amount, freq)
         
 # ---------- INCOME ---------- #
-
 with st.expander("💵 Income", expanded=True):
 
-    job = input_with_frequency("Job", "Job", 20000 )
-    bonus = input_with_frequency("Bonus / commission", "Bonus / commission", 0 )
-    child_support = input_with_frequency("Child support", "Child support", 0 )
-    other_support = input_with_frequency("Other support", "Other support", 0 )
-    tax_return = input_with_frequency("Tax return", "Tax return", 0 )
-    other_income = input_with_frequency("Other income", "Other income", 0 )
+    tab_m, tab_a, tab_o = st.tabs(["Monthly", "Annual", "Occasional"])
+
+    with tab_m:
+        job = input_with_frequency("Job", "income_job", 20000)
+        bonus = input_with_frequency("Bonus / commission", "income_bonus", 0)
+
+    with tab_a:
+        tax_return = input_with_frequency("Tax return", "income_tax", 0)
+
+    with tab_o:
+        child_support = input_with_frequency("Child support", "income_child", 0)
+        other_support = input_with_frequency("Other support", "income_other_support", 0)
+        other_income = input_with_frequency("Other income", "income_other", 0)
 
 income = job + bonus + child_support + other_support + tax_return + other_income
-
 st.success(f"Total Income: {income:,.0f} SEK")
 
-#---------- LOANS ------------- #
 
+# ---------- LOANS ---------- #
 with st.expander("💳 Loans"):
 
-    mortgage_loan = input_with_frequency("Mortgage loan", "loan_mortgage", 8000)
-    car_loan = input_with_frequency("Car loan", "loan_car", 0)
-    personal_loan = input_with_frequency("Personal loan", "loan_personal", 0)
-    credit_cards = input_with_frequency("Credit cards", "loan_credit", 0)
-    other_loans = input_with_frequency("Other loans", "loan_other", 0)
+    tab_m, tab_a, tab_o = st.tabs(["Monthly", "Annual", "Occasional"])
+
+    with tab_m:
+        mortgage_loan = input_with_frequency("Mortgage loan", "loan_mortgage", 8000)
+        car_loan = input_with_frequency("Car loan", "loan_car", 0)
+
+    with tab_a:
+        personal_loan = input_with_frequency("Personal loan", "loan_personal", 0)
+
+    with tab_o:
+        credit_cards = input_with_frequency("Credit cards", "loan_credit", 0)
+        other_loans = input_with_frequency("Other loans", "loan_other", 0)
 
 loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
-
 st.success(f"Total Loans: {loans:,.0f} SEK")
 
-# ---------- HOUSING ---------- #
 
+# ---------- HOUSING ---------- #
 with st.expander("🏠 Housing"):
 
-    rent = input_with_frequency("Rent", "Rent", 0 )
-    electricity = input_with_frequency("Electricity", "Electricity", 500 )
-    heating = input_with_frequency("Heating", "Heating", 0 )
-    maintenance = input_with_frequency("Maintenance", "Maintenance", 0 )
-    association = input_with_frequency("Association fee", "Association fee", 0 )
-    renovation = input_with_frequency("Renovation", "Renovation", 0 )
-    housing_other = input_with_frequency("Other housing", "Other housing", 0 )
+    tab_m, tab_a, tab_o = st.tabs(["Monthly", "Annual", "Occasional"])
+
+    with tab_m:
+        rent = input_with_frequency("Rent", "housing_rent", 0)
+        electricity = input_with_frequency("Electricity", "housing_electricity", 500)
+
+    with tab_a:
+        heating = input_with_frequency("Heating", "housing_heating", 0)
+        association = input_with_frequency("Association fee", "housing_association", 0)
+
+    with tab_o:
+        maintenance = input_with_frequency("Maintenance", "housing_maintenance", 0)
+        renovation = input_with_frequency("Renovation", "housing_renovation", 0)
+        housing_other = input_with_frequency("Other housing", "housing_other", 0)
 
 housing = rent + electricity + heating + maintenance + association + renovation + housing_other
-
 st.success(f"Total Housing: {housing:,.0f} SEK")
 
 
 # ---------- TRANSPORT ---------- #
-
 with st.expander("🚗 Transport"):
 
-    transportation = input_with_frequency("transportation", "transportation", 0 )
-    fuel = input_with_frequency("Fuel", "Fuel", 0 )
-    parking = input_with_frequency("Parking", "Parking", 0 )
-    insurance = input_with_frequency("Insurance", "Insurance", 0 )
-    tax = input_with_frequency("Vehicle tax", "Vehicle tax", 0 )
-    transport_other = input_with_frequency("Other transport", "Other transport", 0 )
+    tab_m, tab_a, tab_o = st.tabs(["Monthly", "Annual", "Occasional"])
+
+    with tab_m:
+        transportation = input_with_frequency("Transportation", "transport_base", 0)
+        fuel = input_with_frequency("Fuel", "transport_fuel", 0)
+
+    with tab_a:
+        insurance = input_with_frequency("Insurance", "transport_insurance", 0)
+        tax = input_with_frequency("Vehicle tax", "transport_tax", 0)
+
+    with tab_o:
+        parking = input_with_frequency("Parking", "transport_parking", 0)
+        transport_other = input_with_frequency("Other transport", "transport_other", 0)
 
 transport = transportation + fuel + parking + insurance + tax + transport_other
-st.write(f"Total Transport: {transport:,.0f} SEK")
-
 st.success(f"Total Transport: {transport:,.0f} SEK")
 
-# ---------- LIFESTYLE ---------- #
 
+# ---------- LIFESTYLE ---------- #
 with st.expander("🛍 Lifestyle"):
 
-    food = input_with_frequency("Food", "Food", 0 )
-    restaurants = input_with_frequency("Restaurants", "Restaurants", 0 )
-    entertainment = input_with_frequency("Entertainment", "Entertainment", 0 )
-    clothes = input_with_frequency("Clothes", "Clothes", 0 )
-    selfcare = input_with_frequency("Self-care", "Self-care", 0 )
+    tab_m, tab_a, tab_o = st.tabs(["Monthly", "Annual", "Occasional"])
+
+    with tab_m:
+        food = input_with_frequency("Food", "life_food", 0)
+        restaurants = input_with_frequency("Restaurants", "life_restaurants", 0)
+
+    with tab_a:
+        clothes = input_with_frequency("Clothes", "life_clothes", 0)
+
+    with tab_o:
+        entertainment = input_with_frequency("Entertainment", "life_entertainment", 0)
+        selfcare = input_with_frequency("Self-care", "life_selfcare", 0)
 
 lifestyle = food + restaurants + entertainment + clothes + selfcare
-
 st.success(f"Total Lifestyle: {lifestyle:,.0f} SEK")
 
+
 # ---------- SUBSCRIPTIONS ---------- #
+with st.expander("📱 Subscriptions"):
 
-with st.expander("📱 subscriptions"):
+    tab_m, tab_a, tab_o = st.tabs(["Monthly", "Annual", "Occasional"])
 
-    phone = input_with_frequency("Phone", "Phone", 0 )
-    internet = input_with_frequency("Internet", "Internet", 0 )
-    gym = input_with_frequency("Gym", "Gym", 0 )
-    union = input_with_frequency("Trade Union", "Trade Union", 0 )
-    unemployment = input_with_frequency("Unemployment fund", "Unemployment fund", 0 )
-    apps = input_with_frequency("Mobile apps", "Mobile apps", 0 )
-    streaming = input_with_frequency("Streaming services", "Streaming services", 0 )
-    music = input_with_frequency("Music", "Music", 0 )
-    games = input_with_frequency("Games", "Games", 0 )
-    subs_other = input_with_frequency("Other subscriptions", "Other subscriptions", 0 )
+    with tab_m:
+        phone = input_with_frequency("Phone", "sub_phone", 0)
+        internet = input_with_frequency("Internet", "sub_internet", 0)
+        gym = input_with_frequency("Gym", "sub_gym", 0)
+
+    with tab_a:
+        union = input_with_frequency("Trade Union", "sub_union", 0)
+        unemployment = input_with_frequency("Unemployment fund", "sub_unemployment", 0)
+
+    with tab_o:
+        apps = input_with_frequency("Mobile apps", "sub_apps", 0)
+        streaming = input_with_frequency("Streaming services", "sub_streaming", 0)
+        music = input_with_frequency("Music", "sub_music", 0)
+        games = input_with_frequency("Games", "sub_games", 0)
+        subs_other = input_with_frequency("Other subscriptions", "sub_other", 0)
 
 subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
-
-st.success(f"Total subscriptions: {subscriptions:,.0f} SEK")
+st.success(f"Total Subscriptions: {subscriptions:,.0f} SEK")
 
 # ---------- OTHER ---------- #
-
 with st.expander("✈️ Other"):
 
-    travel = input_with_frequency("Travel", "Travel", 0 )
-    charity = input_with_frequency("Charity", "Charity", 0 )
-    other = input_with_frequency("Other", "Other", 0 )
+    tab_m, tab_a, tab_o = st.tabs(["Monthly", "Annual", "Occasional"])
+
+    with tab_m:
+        travel = input_with_frequency("Travel", "other_travel", 0)
+
+    with tab_a:
+        charity = input_with_frequency("Charity", "other_charity", 0)
+
+    with tab_o:
+        other = input_with_frequency("Other", "other_misc", 0)
 
 other_total = travel + charity + other
-
 st.success(f"Total Other: {other_total:,.0f} SEK")
 
 # ---------- TOTAL ---------- #
