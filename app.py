@@ -64,6 +64,23 @@ else:
         age = st.number_input(f"Age of member {i+1}", 0, 100, 30)
         ages.append(age)
 
+#----------- Frequency --------------- #
+
+def input_with_frequency(label, default=0):
+    amount = st.number_input(label, 0, 200000, default)
+    freq = st.selectbox(f"{label} frequency", ["Monthly", "Annual", "Occasional"])
+    return monthly_value(amount, freq)
+
+#--------- Frequency Converter -------- #
+
+def monthly_value(amount, frequency):
+    if frequency == "Monthly":
+        return amount
+    elif frequency == "Annual":
+        return amount / 12
+    elif frequency == "Occasional":
+        return amount / 12
+        
 # ---------- INCOME ---------- #
 
 with st.expander("💵 Income", expanded=True):
@@ -178,22 +195,6 @@ def get_reference_cost(ages):
 
     return total
 
-#----------- Frequency --------------- #
-
-def input_with_frequency(label, default=0):
-    amount = st.number_input(label, 0, 200000, default)
-    freq = st.selectbox(f"{label} frequency", ["Monthly", "Annual", "Occasional"])
-    return monthly_value(amount, freq)
-
-#--------- Frequency Converter -------- #
-
-def monthly_value(amount, frequency):
-    if frequency == "Monthly":
-        return amount
-    elif frequency == "Annual":
-        return amount / 12
-    elif frequency == "Occasional":
-        return amount / 12
 # ---------- AI FUNCTIONS ---------- #
 
 def generate_advice():
