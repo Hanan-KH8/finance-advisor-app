@@ -85,7 +85,7 @@ def monthly_value(amount, frequency):
 
 with st.expander("💵 Income", expanded=True):
 
-    job = input_with_frequency ("Job", "job", 0)
+    job = input_with_frequency ("Job", "job", 25000, 0)
     bonus = input_with_frequency ("Bonus / commission", "Bonus / commission", 200000, 0)
     child_support = input_with_frequency ("Child support", "Child support", 200000, 0)
     other_support = input_with_frequency("Other support", "Other support", 200000, 0)
