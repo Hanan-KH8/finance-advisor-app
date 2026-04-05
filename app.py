@@ -340,27 +340,6 @@ all_items = (
 
 st.divider()
 
-# ------------ Group Frequency ------------ #
-
-st.subheader("📊 Expenses by Frequency")
-
-monthly_total = 0
-annual_total = 0
-occasional_total = 0
-
-# Example (expand later)
-monthly_total = freq_data["Monthly"]
-annual_total = freq_data["Annual"]
-occasional_total = freq_data["Occasional"]
-
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Monthly", f"{monthly_total:,.0f} SEK")
-col2.metric("Annual", f"{annual_total:,.0f} SEK")
-col3.metric("Occasional", f"{occasional_total:,.0f} SEK")
-
-st.divider()
-
 # --------- Frequency analysis -------- #
 
 st.subheader("📊 Spending by Frequency")
@@ -382,6 +361,28 @@ col2.metric("Annual spending", f"{freq_data['Annual']:,.0f} SEK")
 col3.metric("Occasional spending", f"{freq_data['Occasional']:,.0f} SEK")
 
 st.divider()
+
+# ------------ Group Frequency ------------ #
+
+st.subheader("📊 Expenses by Frequency")
+
+monthly_total = 0
+annual_total = 0
+occasional_total = 0
+
+# Example (expand later)
+monthly_total = freq_data["Monthly"]
+annual_total = freq_data["Annual"]
+occasional_total = freq_data["Occasional"]
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Monthly", f"{monthly_total:,.0f} SEK")
+col2.metric("Annual", f"{annual_total:,.0f} SEK")
+col3.metric("Occasional", f"{occasional_total:,.0f} SEK")
+
+st.divider()
+
 
 # -------- Frequency Insight ---------- #
 
