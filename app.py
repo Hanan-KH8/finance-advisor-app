@@ -366,11 +366,6 @@ st.divider()
 
 st.subheader("📊 Expenses by Frequency")
 
-monthly_total = 0
-annual_total = 0
-occasional_total = 0
-
-# Example (expand later)
 monthly_total = freq_data["Monthly"]
 annual_total = freq_data["Annual"]
 occasional_total = freq_data["Occasional"]
