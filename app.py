@@ -168,7 +168,7 @@ loan_items =[
     (car_loan, car_freq),
     (personal_loan, personal_freq),
     (credit_cards, credit_freq),
-    (other_loans, other_freq),
+    (other_loan, other_freq),
     ]
 
 
