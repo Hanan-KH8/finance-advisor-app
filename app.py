@@ -148,15 +148,15 @@ st.divider()
 # ---------- LOANS ---------- #
 with st.expander("💳 Loans"):
 
-    mortgage_loan, mortgage_freq = input_with_frequency("Mortgage loan", "loan_mortgage", 8000)
+    mortgage_loan, mortgage_freq = input_with_frequency("Mortgage loan", "loans_mortgage", 8000)
 
-    car_loan, car_freq = input_with_frequency("Car loan", "loan_car", 0)
+    car_loan, car_freq = input_with_frequency("Car loan", "loans_car", 0)
 
-    personal_loan, personal_freq = input_with_frequency("Personal loan", "loan_personal", 0)
+    personal_loan, personal_freq = input_with_frequency("Personal loan", "loans_personal", 0)
 
-    credit_cards, credit_freq = input_with_frequency("Credit cards", "loan_credit", 0)
+    credit_cards, credit_freq = input_with_frequency("Credit cards", "loans_credit", 0)
 
-    other_loans, other_loans_freq = input_with_frequency("Other loans", "loan_other", 0)
+    other_loans, other_loans_freq = input_with_frequency("Other loans", "loans_other", 0)
 
 
 loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
@@ -168,7 +168,7 @@ loan_items =[
     (car_loan, car_freq),
     (personal_loan, personal_freq),
     (credit_cards, credit_freq),
-    (other_loan, other_freq),
+    (other_loans, other_freq),
     ]
 
 
@@ -332,7 +332,7 @@ all_items = (
     income_items +
     housing_items +
     transport_items +
-    loan_items +
+    loans_items +
     lifestyle_items +
     subscriptions_items +
     other_items
