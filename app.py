@@ -369,20 +369,6 @@ def chat_response(q):
         return "Reduce restaurants and subscriptions"
     return "Focus on saving more"
 
-def generate_financial_advice(..., freq_data):
-
-    advice = []
-
-    if freq_data["Annual"] > freq_data["Monthly"]:
-        advice.append("📆 Your annual costs are high — plan savings ahead")
-
-    if freq_data["Occasional"] > 2000:
-        advice.append("🎯 Irregular spending is significant — build emergency buffer")
-
-    # existing logic...
-
-    return advice
-
 st.divider()
 
 # ---------- TABS ---------- #
