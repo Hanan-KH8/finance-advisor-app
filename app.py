@@ -6,14 +6,32 @@ from supabase import create_client
 # ---------- CONFIG ---------- #
 st.set_page_config(page_title="Finance Advisor", layout="centered")
 
-st.title("💰 Personal Finance Advisor")
-st.info("This tool provides financial insights for educational purposes and is not financial advice.")
+st.title("💰 Personal Finance Planner")
+st.info("Efficiently manage your finances for a better future")
 
 # ---------- SUPABASE ---------- #
 SUPABASE_URL = "https://rwubgrllaaatrwqydqdg.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3dWJncmxsYWFhdHJ3cXlkcWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTAxMzYsImV4cCI6MjA4OTI2NjEzNn0.95AmKL8w6s78eTFdo2YYBFz6bTzNaljxEPGyFmwfrcA"
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# ------- APP View ----------- #
+
+st.markdown("""
+<style>
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    max-width: 420px;
+}
+div[data-testid="stMetric"] {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ---------- LOGIN ---------- #
 st.subheader("🔐 Login")
@@ -91,7 +109,9 @@ def input_with_frequency(label, key, default=0):
         key=f"{key}_freq"
     )
 
-    return monthly_value(amount, freq)
+    monthly = monthly_value(amount, freq)
+
+    return monthly, freq
         
 # ---------- INCOME ---------- #
 with st.expander("💵 Income", expanded=True):
@@ -113,6 +133,7 @@ with st.expander("💵 Income", expanded=True):
 income = job + bonus + child_support + other_support + tax_return + other_income
 st.success(f"Total Income: {income:,.0f} SEK")
 
+st.divider()
 
 # ---------- LOANS ---------- #
 with st.expander("💳 Loans"):
@@ -133,6 +154,7 @@ with st.expander("💳 Loans"):
 loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
 st.success(f"Total Loans: {loans:,.0f} SEK")
 
+st.divider()
 
 # ---------- HOUSING ---------- #
 with st.expander("🏠 Housing"):
@@ -155,6 +177,7 @@ with st.expander("🏠 Housing"):
 housing = rent + electricity + heating + maintenance + association + renovation + housing_other
 st.success(f"Total Housing: {housing:,.0f} SEK")
 
+st.divider()
 
 # ---------- TRANSPORT ---------- #
 with st.expander("🚗 Transport"):
@@ -176,6 +199,7 @@ with st.expander("🚗 Transport"):
 transport = transportation + fuel + parking + insurance + tax + transport_other
 st.success(f"Total Transport: {transport:,.0f} SEK")
 
+st.divider()
 
 # ---------- LIFESTYLE ---------- #
 with st.expander("🛍 Lifestyle"):
@@ -196,6 +220,7 @@ with st.expander("🛍 Lifestyle"):
 lifestyle = food + restaurants + entertainment + clothes + selfcare
 st.success(f"Total Lifestyle: {lifestyle:,.0f} SEK")
 
+st.divider()
 
 # ---------- SUBSCRIPTIONS ---------- #
 with st.expander("📱 Subscriptions"):
@@ -221,6 +246,8 @@ with st.expander("📱 Subscriptions"):
 subscriptions = phone + internet + gym + union + unemployment + apps + streaming + music + games + subs_other
 st.success(f"Total Subscriptions: {subscriptions:,.0f} SEK")
 
+st.divider()
+
 # ---------- OTHER ---------- #
 with st.expander("✈️ Other"):
 
@@ -238,11 +265,15 @@ with st.expander("✈️ Other"):
 other_total = travel + charity + other
 st.success(f"Total Other: {other_total:,.0f} SEK")
 
+st.divider()
+
 # ---------- TOTAL ---------- #
 
 total_expenses = housing + transport + lifestyle + subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
+
+st.divider()
 
 # ------------ Group Frequency ------------ #
 
@@ -263,6 +294,48 @@ col1.metric("Monthly", f"{monthly_total:,.0f} SEK")
 col2.metric("Annual", f"{annual_total:,.0f} SEK")
 col3.metric("Occasional", f"{occasional_total:,.0f} SEK")
 
+st.divider()
+
+# --------- Frequency analysis -------- #
+
+st.subheader("📊 Spending by Frequency")
+
+freq_data = {
+    "Monthly": 0,
+    "Annual": 0,
+    "Occasional": 0
+}
+
+# Example (expand for all items)
+for value, freq in [
+    (food, food_freq),
+    (restaurants, rest_freq),
+]:
+    freq_data[freq] += value
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Monthly spending", f"{freq_data['Monthly']:,.0f} SEK")
+col2.metric("Annual spending", f"{freq_data['Annual']:,.0f} SEK")
+col3.metric("Occasional spending", f"{freq_data['Occasional']:,.0f} SEK")
+
+st.divider()
+
+# -------- Frequency Insight ---------- #
+
+st.subheader("🧠 Spending Insights")
+
+if freq_data["Annual"] > freq_data["Monthly"] * 0.5:
+    st.warning("⚠️ High annual expenses — may cause cash flow stress")
+
+if freq_data["Occasional"] > freq_data["Monthly"] * 0.5:
+    st.warning("⚠️ High irregular spending — consider budgeting buffer")
+
+if freq_data["Monthly"] > freq_data["Annual"]:
+    st.success("✅ Stable monthly cost structure")
+    
+st.divider()
+
 #--------- Konsumentverket -------- #
 
 def get_reference_cost(ages):
@@ -277,6 +350,7 @@ def get_reference_cost(ages):
             total += 5000
 
     return total
+st.divider()
 
 # ---------- AI FUNCTIONS ---------- #
 
@@ -293,6 +367,22 @@ def chat_response(q):
         return "Reduce restaurants and subscriptions"
     return "Focus on saving more"
 
+def generate_financial_advice(..., freq_data):
+
+    advice = []
+
+    if freq_data["Annual"] > freq_data["Monthly"]:
+        advice.append("📆 Your annual costs are high — plan savings ahead")
+
+    if freq_data["Occasional"] > 2000:
+        advice.append("🎯 Irregular spending is significant — build emergency buffer")
+
+    # existing logic...
+
+    return advice
+
+st.divider()
+
 # ---------- TABS ---------- #
 
 tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🎯 Goals", "💬 Advisor"])
@@ -306,6 +396,8 @@ with tab1:
     col2.metric("Expenses", f"{total_expenses:,.0f}")
     col3.metric("Savings", f"{remaining:,.0f}")
 
+st.divider()
+    
     # ---------- WHAT-IF SIMULATOR ---------- #
     st.subheader("🔮 What-if Simulator")
 
@@ -318,6 +410,8 @@ with tab1:
     st.write(f"New savings: {new_savings:,.0f} SEK/month")
     st.write(f"Improvement: {(new_savings - remaining):,.0f} SEK")
 
+st.divider()
+    
     # ---------- NEEDS VS WANTS ---------- #
     st.subheader("📊 Needs vs Wants")
 
@@ -329,6 +423,23 @@ with tab1:
         st.write(f"Needs: {needs/income*100:.1f}%")
         st.write(f"Wants: {wants/income*100:.1f}%")
         st.write(f"Savings: {savings/income*100:.1f}%")
+
+st.divider()
+    # ---------- Spending frequency insights ---------- #
+    st.subheader("📈 Spending Breakdown")
+
+chart_data = pd.DataFrame({
+    "Category": ["Monthly", "Annual", "Occasional"],
+    "Amount": [
+        freq_data["Monthly"],
+        freq_data["Annual"],
+        freq_data["Occasional"]
+    ]
+})
+
+st.bar_chart(chart_data.set_index("Category"))
+
+st.divider()
 
 # ---------- Comparison with Konsumentverket ---------- #
 reference_cost = get_reference_cost(ages)
@@ -342,6 +453,9 @@ if total_expenses > reference_cost:
     st.warning("⚠️ Your spending is above recommended levels")
 else:
     st.success("✅ Your spending is within recommended range")
+
+st.divider()
+
 
 # ---------- Goal ------------- #
 
@@ -362,6 +476,9 @@ else:
     gap = monthly_savings_needed - current_savings
     st.warning(f"⚠️ You need an extra {gap:,.0f} SEK/month to reach your goal")
 
+st.divider()
+
+
 # ---------- Progress ------------ #
 
 progress = min(current_savings / monthly_savings_needed, 1.0)
@@ -369,6 +486,8 @@ progress = min(current_savings / monthly_savings_needed, 1.0)
 st.progress(progress)
 
 st.write(f"Progress: {progress*100:.1f}%")
+
+st.divider()
 
 # ---------- ADVISOR ---------- #
 with tab3:
@@ -381,6 +500,8 @@ with tab3:
 
     if question:
         st.write("🤖", chat_response(question.lower()))
+
+st.divider()
 
 # ---------- SAVE DATA ---------- #
 
@@ -411,6 +532,9 @@ if st.button("Save my budget"):
 
     except Exception as e:
         st.error(f"Error: {e}")
+
+st.divider()
+
 
 # ---------- LOAD DATA ---------- #
   
