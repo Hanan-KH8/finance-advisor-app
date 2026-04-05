@@ -156,7 +156,7 @@ with st.expander("💳 Loans"):
 
     credit_cards, credit_freq = input_with_frequency("Credit cards", "loans_credit", 0)
 
-    other_loans, other_loans_freq = input_with_frequency("Other loans", "loans_other", 0)
+    other_loans, other_loans_freq = input_with_frequency("Other loans", "loans_other_loans", 0)
 
 
 loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
@@ -168,7 +168,7 @@ loans_items =[
     (car_loan, car_freq),
     (personal_loan, personal_freq),
     (credit_cards, credit_freq),
-    (other_loans, other_freq),
+    (other_loans, other_loans_freq),
     ]
 
 
