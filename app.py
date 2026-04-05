@@ -108,11 +108,25 @@ income = job + bonus + child_support + other_support + tax_return + other_income
 
 st.success(f"Total Income: {income:,.0f} SEK")
 
+#---------- LOANS ------------- #
+
+with st.expander("💳 Loans"):
+
+    mortgage_loan = input_with_frequency("Mortgage loan", "loan_mortgage", 8000)
+    car_loan = input_with_frequency("Car loan", "loan_car", 0)
+    personal_loan = input_with_frequency("Personal loan", "loan_personal", 0)
+    credit_cards = input_with_frequency("Credit cards", "loan_credit", 0)
+    other_loans = input_with_frequency("Other loans", "loan_other", 0)
+
+loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
+
+st.success(f"Total Loans: {loans:,.0f} SEK")
+
 # ---------- HOUSING ---------- #
 
 with st.expander("🏠 Housing"):
 
-    mortgage = input_with_frequency("Rent / Mortgage", "Rent / Mortgage", 0 )
+    rent = input_with_frequency("Rent", "Rent", 0 )
     electricity = input_with_frequency("Electricity", "Electricity", 500 )
     heating = input_with_frequency("Heating", "Heating", 0 )
     maintenance = input_with_frequency("Maintenance", "Maintenance", 0 )
@@ -120,7 +134,7 @@ with st.expander("🏠 Housing"):
     renovation = input_with_frequency("Renovation", "Renovation", 0 )
     housing_other = input_with_frequency("Other housing", "Other housing", 0 )
 
-housing = mortgage + electricity + heating + maintenance + association + renovation + housing_other
+housing = rent + electricity + heating + maintenance + association + renovation + housing_other
 
 st.success(f"Total Housing: {housing:,.0f} SEK")
 
@@ -129,14 +143,14 @@ st.success(f"Total Housing: {housing:,.0f} SEK")
 
 with st.expander("🚗 Transport"):
 
-    transport_loan = input_with_frequency("Vehicle loan", "Vehicle loan", 0 )
+    transportation = input_with_frequency("transportation", "transportation", 0 )
     fuel = input_with_frequency("Fuel", "Fuel", 0 )
     parking = input_with_frequency("Parking", "Parking", 0 )
     insurance = input_with_frequency("Insurance", "Insurance", 0 )
     tax = input_with_frequency("Vehicle tax", "Vehicle tax", 0 )
     transport_other = input_with_frequency("Other transport", "Other transport", 0 )
 
-transport = transport_loan + fuel + parking + insurance + tax + transport_other
+transport = transportation + fuel + parking + insurance + tax + transport_other
 st.write(f"Total Transport: {transport:,.0f} SEK")
 
 st.success(f"Total Transport: {transport:,.0f} SEK")
@@ -191,6 +205,25 @@ st.success(f"Total Other: {other_total:,.0f} SEK")
 total_expenses = housing + transport + lifestyle + subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
+
+# ------------ Group Frequency ------------ #
+
+st.subheader("📊 Expenses by Frequency")
+
+monthly_total = 0
+annual_total = 0
+occasional_total = 0
+
+# Example (expand later)
+monthly_total += housing + transport + food
+annual_total += subscriptions * 12
+occasional_total += other_total * 12
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Monthly", f"{monthly_total:,.0f} SEK")
+col2.metric("Annual", f"{annual_total:,.0f} SEK")
+col3.metric("Occasional", f"{occasional_total:,.0f} SEK")
 
 #--------- Konsumentverket -------- #
 
