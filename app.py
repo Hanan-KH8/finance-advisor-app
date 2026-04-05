@@ -387,7 +387,8 @@ with tab1:
 st.divider()
     
     # ---------- WHAT-IF SIMULATOR ---------- #
-    st.subheader("🔮 What-if Simulator")
+
+st.subheader("🔮 What-if Simulator")
 
     reduction = st.slider("Reduce restaurants spending (%)", 0, 50, 10)
 
@@ -401,7 +402,7 @@ st.divider()
 st.divider()
     
     # ---------- NEEDS VS WANTS ---------- #
-    st.subheader("📊 Needs vs Wants")
+st.subheader("📊 Needs vs Wants")
 
     needs = housing + food + transport
     wants = restaurants + entertainment + subscriptions
