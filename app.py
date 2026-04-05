@@ -102,7 +102,7 @@ with st.expander("💵 Income", expanded=True):
     child_support = input_with_frequency("Child support", "Child support", 0 )
     other_support = input_with_frequency("Other support", "Other support", 0 )
     tax_return = input_with_frequency("Tax return", "Tax return", 0 )
-    other_income = input_with_frequency("Other", "Other", 0 )
+    other_income = input_with_frequency("Other income", "Other income", 0 )
 
 income = job + bonus + child_support + other_support + tax_return + other_income
 
