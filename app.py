@@ -226,10 +226,10 @@ with st.expander("🛍 Lifestyle"):
     restaurants, restaurants_freq = input_with_frequency ( "Restaurants", "lifestyle_restaurants", 0 )
     entertainment, entertainment_freq = input_with_frequency ( "Entertainment", "lifestyle_entertainment", 0 )
     clothes, clothes_freq = input_with_frequency ( "Clothes", "lifestyle_clothes", 0 )
-    self-care, self-care_freq = input_with_frequency ( "Self-care", "lifestyle_self-care", 0 )
+    selfcare, self-care_freq = input_with_frequency ( "Self-care", "lifestyle_selfcare", 0 )
 
 
-lifestyle = food + restaurants + entertainment + clothes + self-care
+lifestyle = food + restaurants + entertainment + clothes + selfcare
 
 st.success(f"Total Lifestyle: {lifestyle:,.0f} SEK")
 
