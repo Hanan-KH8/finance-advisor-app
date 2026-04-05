@@ -139,6 +139,16 @@ income = (
 )
 
 st.success(f"Total Income: {income:,.0f} SEK")
+
+income_items =[
+    (job, job_freq),
+    (bonus,    bonus_freq),
+    (child_support, child_support_freq),
+    (other_support, other_support_freq),
+    (tax_return, tax_return_freq),
+    (other_income, other_income_freq),
+    ]
+
 st.divider()
 
 
@@ -159,6 +169,15 @@ with st.expander("💳 Loans"):
 loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
 
 st.success(f"Total Loans: {loans:,.0f} SEK")
+
+loans_items =[
+    (mortgage_loan, mortgage_loan_freq),
+    (car_loan, car_loan_freq),
+    (personal_loan, personal_loan_freq),
+    (credit_cards, credit_cards_freq),
+    (other_loans, other_loans_freq),
+    ]
+
 
 st.divider()
 
@@ -188,9 +207,20 @@ housing = (
     association +
     renovation +
     housing_other
-)
+    )
 
 st.success(f"Total Housing: {housing:,.0f} SEK")
+
+Housing_items =[
+    (rent, rent_freq),
+    (electricity, electricity_freq),
+    (heating, heating_freq),
+    (maintenance, maintenance_freq),
+    (association, association_freq),
+    (renovation, renovation_freq),
+    (housing_other, housing_other_freq),
+    ]
+
 
 st.divider()
 
@@ -215,7 +245,7 @@ transport_items = [
     (insurance, insurance_freq),
     (vehicle_tax, vehicle_tax_freq),
     (other_transport, other_transport_freq),
-]
+    ]
 st.divider()
 
 # ---------- LIFESTYLE ---------- #
@@ -232,6 +262,15 @@ with st.expander("🛍 Lifestyle"):
 lifestyle = food + restaurants + entertainment + clothes + selfcare
 
 st.success(f"Total Lifestyle: {lifestyle:,.0f} SEK")
+
+lifestyle_items =[
+    (food, food_freq),
+    (restaurants, restaurants_freq),
+    (entertainment, entertainment_freq),
+    (clothes, clothes_freq),
+    (self-care, self-care_freq),
+    ]
+
 
 st.divider()
 
@@ -254,6 +293,20 @@ subscriptions = phone + internet + gym + union + unemployment_fund + apps + stre
 
 st.success(f"Total Subscriptions: {subscriptions:,.0f} SEK")
 
+subscriptions_items =[
+    (phone, phone_freq),
+    (internet, internet_freq),
+    (gym, gym_freq),
+    (union, union_freq),
+    (unemployment_fund, unemployment_fund_freq),
+    (apps, apps_freq),
+    (streaming, streaming_freq),
+    (music, music_freq),
+    (games, games_freq),
+    (subs_other, subs_other_freq),
+    ]
+
+
 st.divider()
 
 # ---------- OTHER ---------- #
@@ -266,6 +319,12 @@ with st.expander("✈️ Other"):
 other_total = travel + charity + other
 
 st.success(f"Total Other: {other_total:,.0f} SEK")
+
+other_items =[
+    (travel, travel_freq),
+    (charity, charity_freq),
+    (other, other_freq),
+    ]
 
 st.divider()
 
