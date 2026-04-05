@@ -334,6 +334,17 @@ total_expenses = housing + transport + lifestyle + subscriptions + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
+#-------- All Items ----- #
+all_items = (
+    income_items +
+    housing_items +
+    transport_items +
+    loan_items +
+    lifestyle_items +
+    subscription_items +
+    other_items
+)
+
 st.divider()
 
 # ------------ Group Frequency ------------ #
