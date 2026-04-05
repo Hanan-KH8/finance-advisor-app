@@ -82,13 +82,6 @@ else:
         age = st.number_input(f"Age of member {i+1}", 0, 100, 30)
         ages.append(age)
 
-#----------- Frequency --------------- #
-
-def input_with_frequency(label, default=0):
-    amount = st.number_input(label, 0, 200000, default)
-    freq = st.selectbox(f"{label} frequency", ["Monthly", "Annual", "Occasional"])
-    return monthly_value(amount, freq)
-
 #--------- Frequency Converter -------- #
 
 def monthly_value(amount, frequency):
@@ -170,12 +163,12 @@ loans = mortgage_loan + car_loan + personal_loan + credit_cards + other_loans
 
 st.success(f"Total Loans: {loans:,.0f} SEK")
 
-loans_items =[
-    (mortgage_loan, mortgage_loan_freq),
-    (car_loan, car_loan_freq),
-    (personal_loan, personal_loan_freq),
-    (credit_cards, credit_cards_freq),
-    (other_loans, other_loans_freq),
+loan_items =[
+    (mortgage_loan, mortgage_freq),
+    (car_loan, car_freq),
+    (personal_loan, personal_freq),
+    (credit_cards, credit_freq),
+    (other_loans, other_freq),
     ]
 
 
@@ -211,7 +204,7 @@ housing = (
 
 st.success(f"Total Housing: {housing:,.0f} SEK")
 
-Housing_items =[
+housing_items =[
     (rent, rent_freq),
     (electricity, electricity_freq),
     (heating, heating_freq),
@@ -268,7 +261,7 @@ lifestyle_items =[
     (restaurants, restaurants_freq),
     (entertainment, entertainment_freq),
     (clothes, clothes_freq),
-    (self-care, self-care_freq),
+    (selfcare, selfcare_freq),
     ]
 
 
@@ -277,16 +270,16 @@ st.divider()
 # ---------- SUBSCRIPTIONS ---------- #
 with st.expander("📱 Subscriptions"):
 
-    phone, phone_freq =  input_with_frequency ( "Phone", "subscriptions_phone ", 0 )
-    internet, internet_freq =  input_with_frequency ( "Internet", "subscriptions_internet ", 0 )
-    gym, gym_freq =  input_with_frequency ( "Gym", "subscriptions_gym ", 0 )
-    union, union_freq =  input_with_frequency ( "Trade Union", "subscriptions_union ", 0 )
-    unemployment_fund, unemployment_fund_freq =  input_with_frequency ( "Unemployment fund", "subscriptions_unemployment_fund ", 0 )
-    apps, apps_freq =  input_with_frequency ( "Mobile apps", "subscriptions_apps ", 0 )
+    phone, phone_freq =  input_with_frequency ( "Phone", "subscriptions_phone", 0 )
+    internet, internet_freq =  input_with_frequency ( "Internet", "subscriptions_internet", 0 )
+    gym, gym_freq =  input_with_frequency ( "Gym", "subscriptions_gym", 0 )
+    union, union_freq =  input_with_frequency ( "Trade Union", "subscriptions_union", 0 )
+    unemployment_fund, unemployment_fund_freq =  input_with_frequency ( "Unemployment fund", "subscriptions_unemployment_fund", 0 )
+    apps, apps_freq =  input_with_frequency ( "Mobile apps", "subscriptions_apps", 0 )
     streaming, streaming_freq =  input_with_frequency ( "Streaming services", "subscriptions_streaming", 0 )
     music, music_freq =  input_with_frequency ( "Music", "subscriptions_music", 0 )
     games, games_freq =  input_with_frequency ( "Games", "subscriptions_games", 0 )
-    subs_other, subs_others_freq =  input_with_frequency ( "Other subscriptions", "subscriptions_subs_other", 0 )
+    subs_other, subs_other_freq =  input_with_frequency ( "Other subscriptions", "subscriptions_subs_other", 0 )
 
 
 subscriptions = phone + internet + gym + union + unemployment_fund + apps + streaming + music + games + subs_other
@@ -312,9 +305,9 @@ st.divider()
 # ---------- OTHER ---------- #
 with st.expander("✈️ Other"):
 
-    travel, travel_freq =  input_with_frequency ( "Travel", "other_travel ", 0 )
-    charity, charity_freq =  input_with_frequency ( "Charity", "other_charity ", 0 )
-    other, other_freq =  input_with_frequency ( "Other", "other_other ", 0 )
+    travel, travel_freq =  input_with_frequency ( "Travel", "other_travel", 0 )
+    charity, charity_freq =  input_with_frequency ( "Charity", "other_charity", 0 )
+    other, other_freq =  input_with_frequency ( "Other", "other_other", 0 )
 
 other_total = travel + charity + other
 
@@ -330,7 +323,7 @@ st.divider()
 
 # ---------- TOTAL ---------- #
 
-total_expenses = housing + transport + lifestyle + subscriptions + other_total
+total_expenses = housing + transport + lifestyle + subscriptions + loans + other_total
 remaining = income - total_expenses
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
@@ -341,7 +334,7 @@ all_items = (
     transport_items +
     loan_items +
     lifestyle_items +
-    subscription_items +
+    subscriptions_items +
     other_items
 )
 
@@ -356,9 +349,9 @@ annual_total = 0
 occasional_total = 0
 
 # Example (expand later)
-monthly_total += housing + transport + food
-annual_total += subscriptions * 12
-occasional_total += other_total * 12
+monthly_total = freq_data["Monthly"]
+annual_total = freq_data["Annual"]
+occasional_total = freq_data["Occasional"]
 
 col1, col2, col3 = st.columns(3)
 
@@ -379,10 +372,7 @@ freq_data = {
 }
 
 # Example (expand for all items)
-for value, freq in [
-    (food, food_freq),
-    (restaurants, rest_freq),
-]:
+for value, freq in all_items:
     freq_data[freq] += value
 
 col1, col2, col3 = st.columns(3)
@@ -454,11 +444,9 @@ with tab1:
     col2.metric("Expenses", f"{total_expenses:,.0f}")
     col3.metric("Savings", f"{remaining:,.0f}")
 
-st.divider()
-    
     # ---------- WHAT-IF SIMULATOR ---------- #
 
-st.subheader("🔮 What-if Simulator")
+    st.subheader("🔮 What-if Simulator")
 
     reduction = st.slider("Reduce restaurants spending (%)", 0, 50, 10)
 
@@ -468,11 +456,9 @@ st.subheader("🔮 What-if Simulator")
 
     st.write(f"New savings: {new_savings:,.0f} SEK/month")
     st.write(f"Improvement: {(new_savings - remaining):,.0f} SEK")
-
-st.divider()
-    
+  
     # ---------- NEEDS VS WANTS ---------- #
-st.subheader("📊 Needs vs Wants")
+    st.subheader("📊 Needs vs Wants")
 
     needs = housing + food + transport
     wants = restaurants + entertainment + subscriptions
@@ -482,19 +468,18 @@ st.subheader("📊 Needs vs Wants")
         st.write(f"Needs: {needs/income*100:.1f}%")
         st.write(f"Wants: {wants/income*100:.1f}%")
         st.write(f"Savings: {savings/income*100:.1f}%")
-
-st.divider()
+        
     # ---------- Spending frequency insights ---------- #
     st.subheader("📈 Spending Breakdown")
 
-chart_data = pd.DataFrame({
+    chart_data = pd.DataFrame({
     "Category": ["Monthly", "Annual", "Occasional"],
     "Amount": [
         freq_data["Monthly"],
         freq_data["Annual"],
         freq_data["Occasional"]
     ]
-})
+    })
 
 st.bar_chart(chart_data.set_index("Category"))
 
