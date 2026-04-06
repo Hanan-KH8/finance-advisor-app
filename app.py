@@ -105,6 +105,21 @@ def input_with_frequency(label, key, default=0):
     monthly = monthly_value(amount, freq)
 
     return monthly, freq
+
+#--------- Konsumentverket -------- #
+
+def get_reference_cost(ages):
+    total = 0
+
+    for age in ages:
+        if age < 6:
+            total += 3000
+        elif age < 18:
+            total += 4000
+        else:
+            total += 5000
+
+    return total
         
 # ---------- INCOME ---------- #
 with st.expander("💵 Income", expanded=True):
@@ -350,64 +365,38 @@ freq_data = {
     "Occasional": 0
 }
 
-# Example (expand for all items)
 for value, freq in all_items:
-    freq_data[freq] += value
+    if freq in freq_data:
+        freq_data[freq] += value
 
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Monthly spending", f"{freq_data['Monthly']:,.0f} SEK")
-col2.metric("Annual spending", f"{freq_data['Annual']:,.0f} SEK")
-col3.metric("Occasional spending", f"{freq_data['Occasional']:,.0f} SEK")
+col1.metric("Monthly", f"{freq_data['Monthly']:,.0f} SEK")
+col2.metric("Annual", f"{freq_data['Annual']:,.0f} SEK")
+col3.metric("Occasional", f"{freq_data['Occasional']:,.0f} SEK")
 
 st.divider()
-
-# ------------ Group Frequency ------------ #
-
-st.subheader("📊 Expenses by Frequency")
-
-monthly_total = freq_data["Monthly"]
-annual_total = freq_data["Annual"]
-occasional_total = freq_data["Occasional"]
-
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Monthly", f"{monthly_total:,.0f} SEK")
-col2.metric("Annual", f"{annual_total:,.0f} SEK")
-col3.metric("Occasional", f"{occasional_total:,.0f} SEK")
-
-st.divider()
-
 
 # -------- Frequency Insight ---------- #
 
 st.subheader("🧠 Spending Insights")
 
-if freq_data["Annual"] > freq_data["Monthly"] * 0.5:
-    st.warning("⚠️ High annual expenses — may cause cash flow stress")
+total = sum(freq_data.values())
 
-if freq_data["Occasional"] > freq_data["Monthly"] * 0.5:
-    st.warning("⚠️ High irregular spending — consider budgeting buffer")
+if total > 0:
+    annual_ratio = freq_data["Annual"] / total
+    occasional_ratio = freq_data["Occasional"] / total
+    monthly_ratio = freq_data["Monthly"] / total
 
-if freq_data["Monthly"] > freq_data["Annual"]:
-    st.success("✅ Stable monthly cost structure")
-    
-st.divider()
+    if annual_ratio > 0.3:
+        st.warning("⚠️ Large portion of spending is annual — plan cash flow")
 
-#--------- Konsumentverket -------- #
+    if occasional_ratio > 0.3:
+        st.warning("⚠️ High irregular spending — build emergency buffer")
 
-def get_reference_cost(ages):
-    total = 0
+    if monthly_ratio > 0.6:
+        st.success("✅ Stable monthly spending structure")
 
-    for age in ages:
-        if age < 6:
-            total += 3000
-        elif age < 18:
-            total += 4000
-        else:
-            total += 5000
-
-    return total
 st.divider()
 
 # ---------- AI FUNCTIONS ---------- #
@@ -433,6 +422,20 @@ tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🎯 Goals", "💬 Advisor"])
 
 # ---------- DASHBOARD ---------- #
 with tab1:
+
+    st.subheader("📈 Spending Breakdown")
+
+    chart_data = pd.DataFrame({
+    "Category": ["Monthly", "Annual", "Occasional"],
+    "Amount": [
+        freq_data["Monthly"],
+        freq_data["Annual"],
+        freq_data["Occasional"]
+    ]
+    })
+
+st.bar_chart(chart_data.set_index("Category"))
+
     st.subheader("📊 Overview")
 
     col1, col2, col3 = st.columns(3)
@@ -465,20 +468,6 @@ with tab1:
         st.write(f"Wants: {wants/income*100:.1f}%")
         st.write(f"Savings: {savings/income*100:.1f}%")
         
-    # ---------- Spending frequency insights ---------- #
-    st.subheader("📈 Spending Breakdown")
-
-    chart_data = pd.DataFrame({
-    "Category": ["Monthly", "Annual", "Occasional"],
-    "Amount": [
-        freq_data["Monthly"],
-        freq_data["Annual"],
-        freq_data["Occasional"]
-    ]
-    })
-
-st.bar_chart(chart_data.set_index("Category"))
-
 st.divider()
 
 # ---------- Comparison with Konsumentverket ---------- #
@@ -521,7 +510,12 @@ st.divider()
 
 # ---------- Progress ------------ #
 
-progress = min(current_savings / monthly_savings_needed, 1.0)
+if monthly_savings_needed > 0:
+    progress = current_savings / monthly_savings_needed
+else:
+    progress = 0
+
+progress = max(0.0, min(progress, 1.0))
 
 st.progress(progress)
 
