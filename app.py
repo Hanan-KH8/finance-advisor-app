@@ -25,12 +25,9 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # ================================
 st.markdown("""
 <style>
-.block-container {max-width:420px;}
-div[data-testid="stMetric"] {
-    background:white;
-    padding:12px;
-    border-radius:12px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+.block-container {
+    max-width: 420px;
+    padding-top: 1rem;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -552,7 +549,7 @@ elif page == "👤 Profile":
 
     ref = get_reference_cost(ages)
 
-    st.subheader("🇸🇪 Benchmark")
+    st.subheader("National Guidlines Benchmark")
     st.write(f"Reference: {ref:,.0f}")
     st.write(f"Your spending: {total_expenses:,.0f}")
 
