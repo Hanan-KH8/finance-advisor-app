@@ -252,40 +252,46 @@ with tab1:
         "Amount":[freq_data["Monthly"],freq_data["Annual"],freq_data["Occasional"]]
     }).set_index("Type"))
 
-    # Category %
+       # Category %
     st.subheader("📊 Category Breakdown")
 
     categories = {
-        "Housing":housing,
-        "Transport":transport,
-        "Lifestyle":lifestyle,
-        "Subscriptions":subscriptions,
-        "Loans":loans
+        "Housing": housing,
+        "Transport": transport,
+        "Lifestyle": lifestyle,
+        "Subscriptions": subscriptions,
+        "Loans": loans
     }
 
-        total_cat = sum(categories.values())
-        for k,v in categories.items():
-        if total_cat>0:
-        st.write(f"{k}: {(v/total_cat*100):.1f}%")
+    total_cat = sum(categories.values())
+
+    for k, v in categories.items():
+        if total_cat > 0:
+            st.write(f"{k}: {(v / total_cat * 100):.1f}%")
 
     # What-if
     
-        st.subheader("🔮 What-if Simulator")
-        reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
-        rest_val = lifestyle_items["restaurants"][0]
-        new_exp = total_expenses - rest_val + rest_val * (1 - reduction / 100)
-        new_savings = income - new_exp
-        st.write(f"New savings: {new_savings:,.0f} SEK/month")
-        st.write(f"Improvement: {(new_savings - net):,.0f} SEK")
+    st.subheader("🔮 What-if Simulator")
+
+    reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
+
+    rest_val = lifestyle_items[1][0]  # safer than dict
+
+    new_exp = total_expenses - rest_val + rest_val * (1 - reduction / 100)
+    new_savings = income - new_exp
+
+    st.write(f"New savings: {new_savings:,.0f} SEK/month")
+    st.write(f"Improvement: {(new_savings - net):,.0f} SEK")
 
 
     # Needs vs Wants
     st.subheader("📊 Needs vs Wants")
     needs = housing + transport + food if 'food' in globals() else housing
     wants = lifestyle
-    if income>0:
-    st.write(f"Needs: {needs/income*100:.1f}%")
-    st.write(f"Wants: {wants/income*100:.1f}%")
+    
+    if income > 0:
+        st.write(f"Needs: {needs/income*100:.1f}%")
+        st.write(f"Wants: {wants/income*100:.1f}%")
 
 # ================================
 # GOALS
