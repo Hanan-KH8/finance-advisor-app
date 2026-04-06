@@ -442,23 +442,23 @@ page = st.radio(
     ["🏠 Home", "📊 Insights", "🎯 Goals", "💬 Advisor", "👤 Profile"],
     horizontal=True
 )
-    if page == "🏠 Home":
+        if page == "🏠 Home":
 
-    st.subheader("🏦 Your Money")
+            st.subheader("🏦 Your Money")
 
-    # ---- BALANCE CARD ----
-    show_card("Net Balance", net, "💳")
+            # ---- BALANCE CARD ----
+            show_card("Net Balance", net, "💳")
 
-    # ---- GRID (KEY METRICS) ----
-    col1, col2 = st.columns(2)
-    col1.metric("Income", f"{income:,.0f}")
-    col2.metric("Expenses", f"{total_expenses:,.0f}")
+            # ---- GRID (KEY METRICS) ----
+            col1, col2 = st.columns(2)
+            col1.metric("Income", f"{income:,.0f}")
+            col2.metric("Expenses", f"{total_expenses:,.0f}")
 
-    col3, col4 = st.columns(2)
-    col3.metric("Savings", f"{savings:,.0f}")
-    col4.metric("Savings Rate", f"{savings_rate:.0f}%")
+            col3, col4 = st.columns(2)
+            col3.metric("Savings", f"{savings:,.0f}")
+            col4.metric("Savings Rate", f"{savings_rate:.0f}%")
 
-    st.divider()
+            st.divider()
 
     # ---- HEALTH STATUS ----
     if total_outflow > income:
