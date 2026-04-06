@@ -27,8 +27,8 @@ st.title("💰 Finance Planner")
 # ================================
 # SUPABASE
 # ================================
-SUPABASE_URL = "YOUR_URL"
-SUPABASE_KEY = "YOUR_KEY"
+SUPABASE_URL = "https://rwubgrllaaatrwqydqdg.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3dWJncmxsYWFhdHJ3cXlkcWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTAxMzYsImV4cCI6MjA4OTI2NjEzNn0.95AmKL8w6s78eTFdo2YYBFz6bTzNaljxEPGyFmwfrcA"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ================================
