@@ -36,13 +36,24 @@ div[data-testid="stMetric"] {
 """, unsafe_allow_html=True)
 
 # ================================
-# SESSION
+# SESSION INIT
 # ================================
 if "user" not in st.session_state:
     st.session_state.user = None
 
 if "signup_clicked" not in st.session_state:
     st.session_state.signup_clicked = False
+
+if "remember" not in st.session_state:
+    st.session_state.remember = False
+
+
+# ================================
+# AUTO LOGIN (SOFT REMEMBER)
+# ================================
+if st.session_state.get("remember") and st.session_state.user:
+    pass  # user stays logged in
+
 
 # ================================
 # AUTH
@@ -64,34 +75,57 @@ if not st.session_state.user:
     if mode == "Sign Up":
 
         if st.session_state.signup_clicked:
-            st.info("⏳ Processing... please wait before trying again")
+            st.info("⏳ Processing... please wait")
 
-        if st.button("Create account", key="signup"):
+        col1, col2 = st.columns(2)
 
-            if st.session_state.signup_clicked:
-                st.warning("⏳ Please wait before trying again")
+        # Create account
+        with col1:
+            if st.button("Create account", key="signup"):
 
-            elif not email or not password:
-                st.warning("Please enter email and password")
+                if st.session_state.signup_clicked:
+                    st.warning("⏳ Please wait before retrying")
 
-            else:
-                try:
-                    st.session_state.signup_clicked = True
+                elif not email or not password:
+                    st.warning("Enter email and password")
 
-                    supabase.auth.sign_up({
-                        "email": email,
-                        "password": password
-                    })
+                else:
+                    try:
+                        st.session_state.signup_clicked = True
 
-                    st.success("✅ Account created! Check your email to confirm before logging in.")
+                        supabase.auth.sign_up({
+                            "email": email,
+                            "password": password
+                        })
 
-                except Exception as e:
-                    error_msg = str(e)
+                        st.success("✅ Account created! Check your email to confirm.")
 
-                    if "429" in error_msg:
-                        st.warning("⏳ Too many attempts. Please wait ~60 seconds and try again.")
-                    else:
-                        st.error(f"Signup failed: {error_msg}")
+                    except Exception as e:
+                        msg = str(e)
+
+                        if "429" in msg:
+                            st.warning("⏳ Too many attempts. Try again in ~60 seconds.")
+                        else:
+                            st.error(f"Signup failed: {msg}")
+
+        # Resend confirmation email
+        with col2:
+            if st.button("Resend email", key="resend"):
+
+                if not email:
+                    st.warning("Enter your email first")
+
+                else:
+                    try:
+                        supabase.auth.resend({
+                            "type": "signup",
+                            "email": email
+                        })
+                        st.success("📩 Confirmation email sent again")
+
+                    except Exception as e:
+                        st.error(f"Error: {e}")
+
 
     # ============================
     # LOGIN
@@ -101,7 +135,7 @@ if not st.session_state.user:
         if st.button("Login", key="login"):
 
             if not email or not password:
-                st.warning("Please enter email and password")
+                st.warning("Enter email and password")
 
             else:
                 try:
@@ -111,29 +145,38 @@ if not st.session_state.user:
                     })
 
                     st.session_state.user = user
-
-                    if remember:
-                        st.session_state.remember = True
+                    st.session_state.remember = remember
 
                     st.success("✅ Logged in!")
                     st.rerun()
 
                 except Exception as e:
-                    error_msg = str(e)
+                    msg = str(e)
 
-                    if "Email not confirmed" in error_msg:
-                        st.warning("📩 Please confirm your email before logging in")
+                    if "Email not confirmed" in msg:
+                        st.warning("📩 Please confirm your email first")
                     else:
-                        st.error(f"Login failed: {error_msg}")
+                        st.error(f"Login failed: {msg}")
 
     st.stop()
 
+
 # ================================
-# LOGGED IN STATE
+# LOGGED-IN STATE
 # ================================
 user_email = st.session_state.user.user.email
-st.success(f"Welcome {user_email}")
 
+col1, col2 = st.columns([3,1])
+
+with col1:
+    st.success(f"Welcome {user_email}")
+
+with col2:
+    if st.button("Logout"):
+        st.session_state.user = None
+        st.session_state.remember = False
+        st.rerun()
+        
 # ================================
 # HELPERS
 # ================================
