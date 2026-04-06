@@ -434,7 +434,7 @@ with tab1:
     ]
     })
 
-st.bar_chart(chart_data.set_index("Category"))
+    st.bar_chart(chart_data.set_index("Category"))
 
     st.subheader("📊 Overview")
 
