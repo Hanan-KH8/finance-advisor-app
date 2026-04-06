@@ -152,7 +152,7 @@ transport_items = section("🚗 Transport",[
 ("Public transportation","trans_pub",0),
 ("Car Insurance","trans_insurance",0),
 ("Vehicle Tax","trans_tax",0),
-("Other fees and taxes","trans_other",0)
+("Other fees and taxes","trans_t_other",0)
 ])
 
 lifestyle_items = section("🛍 Lifestyle",[
