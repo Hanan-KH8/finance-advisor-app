@@ -263,10 +263,10 @@ with tab1:
         "Loans":loans
     }
 
-    total_cat = sum(categories.values())
-    for k,v in categories.items():
-    if total_cat>0:
-    st.write(f"{k}: {(v/total_cat*100):.1f}%")
+        total_cat = sum(categories.values())
+        for k,v in categories.items():
+        if total_cat>0:
+        st.write(f"{k}: {(v/total_cat*100):.1f}%")
 
     # What-if
     
