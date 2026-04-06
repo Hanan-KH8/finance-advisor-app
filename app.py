@@ -437,21 +437,50 @@ for i in insights:
 # ================================
 # DASHBOARD
 # ================================
-tab1, tab2, tab3 = st.tabs(["📊 Dashboard","🎯 Goals","💬 Advisor"])
+page = st.radio(
+    "",
+    ["🏠 Home", "📊 Insights", "🎯 Goals", "💬 Advisor", "👤 Profile"],
+    horizontal=True
+)
+    if page == "🏠 Home":
 
-with tab1:
+    st.subheader("🏦 Your Money")
 
-    st.subheader("🏦 Overview")
+    # ---- BALANCE CARD ----
+    show_card("Net Balance", net, "💳")
 
+    # ---- GRID (KEY METRICS) ----
     col1, col2 = st.columns(2)
+    col1.metric("Income", f"{income:,.0f}")
+    col2.metric("Expenses", f"{total_expenses:,.0f}")
 
-    with col1:
-        show_card("Income", income, "💵")
-        show_card("Savings", savings, "💰")
+    col3, col4 = st.columns(2)
+    col3.metric("Savings", f"{savings:,.0f}")
+    col4.metric("Savings Rate", f"{savings_rate:.0f}%")
 
-    with col2:
-        show_card("Expenses", total_expenses, "💸")
-        show_card("Net", net, "🏦")
+    st.divider()
+
+    # ---- HEALTH STATUS ----
+    if total_outflow > income:
+        st.error("❌ Overspending")
+    elif savings_rate < 10:
+        st.warning("⚠️ Low savings")
+    else:
+        st.success("✅ Healthy finances")
+
+    st.divider()
+
+    # ---- QUICK INSIGHTS ----
+    st.subheader("💡 Quick Insights")
+
+    if lifestyle > income * 0.25:
+        st.write("👉 Lifestyle spending is high")
+
+    if subscriptions > 500:
+        st.write("👉 Review subscriptions")
+
+    if loans > income * 0.3:
+        st.write("👉 Debt level is high")
     
 
     # Health
