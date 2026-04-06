@@ -654,42 +654,6 @@ elif page == "👤 Profile":
         st.write(f"Wants: {wants/income*100:.1f}%")
 
 # ================================
-# GOALS
-# ================================
-with tab2:
-
-    goal = st.number_input("Goal",0,1_000_000,50000)
-    months = st.number_input("Months",1,120,12)
-
-    need = goal/months
-    st.write(f"Need/month: {need:,.0f}")
-
-    if savings>=need:
-        st.success("On track")
-    else:
-        st.warning("Not enough saving")
-
-    progress = min(savings/need if need>0 else 0,1)
-    st.progress(progress)
-
-# ================================
-# AI
-# ================================
-with tab3:
-
-    st.subheader("🤖 Advice")
-
-    if savings_rate < 10:
-        st.write("Increase savings")
-
-    if housing/income > 0.4 if income>0 else False:
-        st.write("Housing too high")
-
-    q = st.text_input("Ask AI")
-    if q:
-        st.write(chat_response(q.lower()))
-
-# ================================
 # BENCHMARK
 # ================================
 ref = get_reference_cost(ages)
