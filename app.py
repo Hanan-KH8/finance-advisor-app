@@ -41,6 +41,9 @@ div[data-testid="stMetric"] {
 if "user" not in st.session_state:
     st.session_state.user = None
 
+if "signup_clicked" not in st.session_state:
+    st.session_state.signup_clicked = False
+
 # ================================
 # AUTH
 # ================================
@@ -49,34 +52,85 @@ if not st.session_state.user:
     st.subheader("🔐 Login")
 
     mode = st.radio("Choose", ["Login", "Sign Up"], key="auth_mode")
+
     email = st.text_input("Email", key="auth_email")
     password = st.text_input("Password", type="password", key="auth_password")
+
     remember = st.checkbox("Remember me")
 
+    # ============================
+    # SIGN UP
+    # ============================
     if mode == "Sign Up":
-        if st.button("Create account", key="signup"):
-            if email and password:
-                supabase.auth.sign_up({"email": email, "password": password})
-                st.success("Account created")
-            else:
-                st.warning("Fill all fields")
 
-    if mode == "Login":
-        if st.button("Login", key="login"):
-            if email and password:
-                user = supabase.auth.sign_in_with_password({
-                    "email": email,
-                    "password": password
-                })
-                st.session_state.user = user
-                if remember:
-                    st.session_state.remember = True
-                st.rerun()
+        if st.session_state.signup_clicked:
+            st.info("⏳ Processing... please wait before trying again")
+
+        if st.button("Create account", key="signup"):
+
+            if st.session_state.signup_clicked:
+                st.warning("⏳ Please wait before trying again")
+
+            elif not email or not password:
+                st.warning("Please enter email and password")
+
             else:
-                st.warning("Fill all fields")
+                try:
+                    st.session_state.signup_clicked = True
+
+                    supabase.auth.sign_up({
+                        "email": email,
+                        "password": password
+                    })
+
+                    st.success("✅ Account created! Check your email to confirm before logging in.")
+
+                except Exception as e:
+                    error_msg = str(e)
+
+                    if "429" in error_msg:
+                        st.warning("⏳ Too many attempts. Please wait ~60 seconds and try again.")
+                    else:
+                        st.error(f"Signup failed: {error_msg}")
+
+    # ============================
+    # LOGIN
+    # ============================
+    elif mode == "Login":
+
+        if st.button("Login", key="login"):
+
+            if not email or not password:
+                st.warning("Please enter email and password")
+
+            else:
+                try:
+                    user = supabase.auth.sign_in_with_password({
+                        "email": email,
+                        "password": password
+                    })
+
+                    st.session_state.user = user
+
+                    if remember:
+                        st.session_state.remember = True
+
+                    st.success("✅ Logged in!")
+                    st.rerun()
+
+                except Exception as e:
+                    error_msg = str(e)
+
+                    if "Email not confirmed" in error_msg:
+                        st.warning("📩 Please confirm your email before logging in")
+                    else:
+                        st.error(f"Login failed: {error_msg}")
 
     st.stop()
 
+# ================================
+# LOGGED IN STATE
+# ================================
 user_email = st.session_state.user.user.email
 st.success(f"Welcome {user_email}")
 
