@@ -189,6 +189,20 @@ other_items = section("✈️ Other",[
 ("Other","other_other",0)
 ])
 
+
+# ================================
+# TOTALS
+# ================================
+def show_subtotal(title, items):
+    total_value = sum(v for v, _ in items)
+
+    col1, col2 = st.columns([2,1])
+    col1.write(title)
+    col2.metric("", f"{total_value:,.0f} SEK")
+
+    return total_value
+
+
 # ================================
 # CALCULATIONS
 # ================================
