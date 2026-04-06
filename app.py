@@ -33,37 +33,18 @@ div[data-testid="stMetric"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- SIGN UP ---------- #
-if login_mode == "Sign Up":
-
-    if st.button("Create account", key="auth_signup"):
-
-        if email == "" or password == "":
-            st.warning("Please enter email and password")
-
-        else:
-            try:
-                supabase.auth.sign_up({
-                    "email": email,
-                    "password": password
-                })
-                st.success("Account created! Please log in.")
-
-            except Exception as e:
-                st.error(e)
-
 # ---------- SESSION INIT ---------- #
 if "user" not in st.session_state:
     st.session_state.user = None
 
-# ---------- AUTO LOGIN CHECK ---------- #
+# ---------- AUTO LOGIN ---------- #
 if st.session_state.user:
 
     user_email = st.session_state.user.user.email
     st.success(f"Welcome back {user_email}")
 
 else:
-    # ---------- LOGIN UI ---------- #
+    # ---------- LOGIN / SIGNUP UI ---------- #
 
     st.subheader("🔐 Login")
 
@@ -74,39 +55,51 @@ else:
 
     remember_me = st.checkbox("Remember me", key="auth_remember")
 
+    # ---------- SIGN UP ---------- #
     if login_mode == "Sign Up":
 
         if st.button("Create account", key="auth_signup"):
-            try:
-                supabase.auth.sign_up({
-                    "email": email,
-                    "password": password
-                })
-                st.success("Account created! Please log in.")
-            except Exception as e:
-                st.error(e)
 
+            if email == "" or password == "":
+                st.warning("Please enter email and password")
+
+            else:
+                try:
+                    supabase.auth.sign_up({
+                        "email": email,
+                        "password": password
+                    })
+                    st.success("Account created! Please log in.")
+
+                except Exception as e:
+                    st.error(e)
+
+    # ---------- LOGIN ---------- #
     elif login_mode == "Login":
 
         if st.button("Login", key="auth_login"):
-            try:
-                user = supabase.auth.sign_in_with_password({
-                    "email": email,
-                    "password": password
-                })
 
-                st.session_state.user = user
+            if email == "" or password == "":
+                st.warning("Please enter email and password")
 
-                if remember_me:
-                    st.session_state["remember"] = True
+            else:
+                try:
+                    user = supabase.auth.sign_in_with_password({
+                        "email": email,
+                        "password": password
+                    })
 
-                st.success("Logged in!")
+                    st.session_state.user = user
 
-            except Exception as e:
-                st.error(e)
+                    if remember_me:
+                        st.session_state["remember"] = True
+
+                    st.success("Logged in!")
+
+                except Exception as e:
+                    st.error(e)
 
     st.stop()  # ⛔ STOP app until login
-
     st.divider()
 
 # -------------- Householf profile -------- #
