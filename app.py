@@ -578,8 +578,7 @@ elif page == "👤 Profile":
         df = pd.DataFrame(res.data)
         if not df.empty:
             st.dataframe(df)
-
-      st.divider()
+    st.divider()
   
     
     # ---- QUICK INSIGHTS ----
