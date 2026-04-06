@@ -189,6 +189,17 @@ other_items = section("✈️ Other",[
 ("Other","other_other",0)
 ])
 
+# ================================
+# Show subtotals
+# ================================
+income = show_subtotal("💵 Total Income", income_items)
+loans = show_subtotal("💳 Total Loans", loans_items)
+housing = show_subtotal("🏠 Total Housing", housing_items)
+transport = show_subtotal("🚗 Total Transport", transport_items)
+lifestyle = show_subtotal("🛍 Total Lifestyle", lifestyle_items)
+subscriptions = show_subtotal("📱 Total Subscriptions", subscriptions_items)
+savings = show_subtotal("💰 Total Savings", savings_items)
+other = show_subtotal("✈️ Total Other", other_items)
 
 # ================================
 # TOTALS
