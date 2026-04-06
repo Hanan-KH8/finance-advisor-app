@@ -129,7 +129,6 @@ income_items = section("💵 Income",[
 ("Tax return","inc_tax",0),
 ("Other income","inc_other",0)
 ])
-income = show_subtotal("💵 Total Income", income_items)
 
 loans_items = section("💳 Loans",[
 ("Mortgage","loan_mort",8000),
@@ -137,7 +136,6 @@ loans_items = section("💳 Loans",[
 ("Credit cards","loan_cc",0),
 ("Other loans","loan_other_loan",0)
 ])
-loans = show_subtotal("💳 Total Loans", loans_items)
 
 housing_items = section("🏠 Housing",[
 ("Rent","house_rent",0),
@@ -147,7 +145,6 @@ housing_items = section("🏠 Housing",[
 ("Electricity","house_el",500),
 ("House Insurance","house_insurance",500)
 ])
-housing = show_subtotal("🏠 Total Housing", housing_items)
 
 transport_items = section("🚗 Transport",[
 ("Public transport","trans_pub",0),
@@ -156,7 +153,6 @@ transport_items = section("🚗 Transport",[
 ("Vehicle Tax","trans_tax",0),
 ("Other fees and taxes","trans_t_other",0)
 ])
-transport = show_subtotal("🚗 Total Transport", transport_items)
 
 lifestyle_items = section("🛍 Lifestyle",[
 ("Groceries","life_food",0),
@@ -166,7 +162,6 @@ lifestyle_items = section("🛍 Lifestyle",[
 ("Grooming","life_groom",0),
 ("Self-care","life_selfcare",0)
 ])
-lifestyle = show_subtotal("🛍 Total Lifestyle", lifestyle_items)
 
 subscriptions_items = section("📱 Subscriptions",[
 ("Phone","sub_phone",0),
@@ -178,7 +173,6 @@ subscriptions_items = section("📱 Subscriptions",[
 ("Other","sub_other_suns",0)
 
 ])
-subscriptions = show_subtotal("📱 Total Subscriptions", subscriptions_items)
 
 savings_items = section("💰 Savings",[
 ("Buffer","sav_buf",0),
@@ -188,15 +182,12 @@ savings_items = section("💰 Savings",[
 ("Other","sav_other_sav",0)
 
 ])
-savings = show_subtotal("💰 Total Savings", savings_items)
 
 other_items = section("✈️ Other",[
 ("Travel","other_travel",0),
 ("Charity","other_charity",0),
 ("Other","other_other",0)
 ])
-other = show_subtotal("✈️ Total Other", other_items)
-
 
 # ================================
 # TOTALS
@@ -278,18 +269,21 @@ with tab1:
     st.subheader("📊 Category Breakdown")
 
     categories = {
-        "Housing": housing,
-        "Transport": transport,
-        "Lifestyle": lifestyle,
-        "Subscriptions": subscriptions,
-        "Loans": loans
+        "Housing": housing_items,
+        "Transport": transport_items,
+        "Lifestyle": lifestyle_items,
+        "Subscriptions": subscriptions_items,
+        "Loans": loans_items
     }
 
-    total_cat = sum(categories.values())
+    category_totals = {k: sum(v for v,_ in items) for k,items in categories.items()}
 
-    for k, v in categories.items():
+    total_cat = sum(category_totals.values())
+
+    for k, v in category_totals.items():
         if total_cat > 0:
-            st.write(f"{k}: {(v / total_cat * 100):.1f}%")
+            st.write(f"{k}: {(v/total_cat*100):.1f}%")
+        
 
     # What-if
     
