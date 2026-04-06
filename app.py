@@ -104,6 +104,79 @@ def chat_response(q):
     if "debt" in q: return "Pay high-interest loans first"
     return "Improve savings and reduce waste"
 
+def financial_score_engine(
+    income,
+    savings,
+    expenses,
+    loans,
+    freq_data,
+):
+    score = 100
+    details = []
+
+    # -------------------------
+    # 1. Savings Score (30 pts)
+    # -------------------------
+    savings_rate = (savings / income * 100) if income > 0 else 0
+
+    if savings_rate < 5:
+        score -= 25
+        details.append("❌ Very low savings")
+    elif savings_rate < 10:
+        score -= 15
+        details.append("⚠️ Low savings")
+    elif savings_rate >= 20:
+        details.append("✅ Strong savings habit")
+
+    # -------------------------
+    # 2. Expense Ratio (25 pts)
+    # -------------------------
+    expense_ratio = expenses / income if income > 0 else 1
+
+    if expense_ratio > 0.9:
+        score -= 25
+        details.append("❌ Spending almost all income")
+    elif expense_ratio > 0.75:
+        score -= 10
+        details.append("⚠️ High spending level")
+
+    # -------------------------
+    # 3. Stability (20 pts)
+    # -------------------------
+    total = sum(freq_data.values())
+    if total > 0:
+        irregular = (freq_data["Annual"] + freq_data["Occasional"]) / total
+
+        if irregular > 0.5:
+            score -= 20
+            details.append("❌ Unstable spending pattern")
+        elif irregular > 0.3:
+            score -= 10
+            details.append("⚠️ Moderate irregular spending")
+
+    # -------------------------
+    # 4. Debt Load (15 pts)
+    # -------------------------
+    debt_ratio = loans / income if income > 0 else 0
+
+    if debt_ratio > 0.4:
+        score -= 15
+        details.append("❌ High debt burden")
+    elif debt_ratio > 0.2:
+        score -= 8
+        details.append("⚠️ Moderate debt level")
+
+    # -------------------------
+    # 5. Buffer (10 pts)
+    # -------------------------
+    if savings_rate < 5:
+        score -= 10
+        details.append("⚠️ No financial buffer")
+
+    score = max(0, score)
+
+    return score, details
+
 # ================================
 # HOUSEHOLD
 # ================================
@@ -234,6 +307,24 @@ freq_data = {"Monthly":0,"Annual":0,"Occasional":0}
 
 for v,f in all_items:
     freq_data[f]+=v
+
+# ================================
+# FINANCIAL SCORE ENGINE
+# ================================
+
+score, insights = financial_score_engine(
+    income,
+    savings,
+    total_expenses,
+    loans,
+    freq_data
+)
+
+st.subheader("🏆 Financial Health Score")
+st.metric("Score", f"{score}/100")
+
+for i in insights:
+    st.write(i)
 
 # ================================
 # DASHBOARD
