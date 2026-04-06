@@ -33,14 +33,6 @@ div[data-testid="stMetric"] {
 </style>
 """, unsafe_allow_html=True)
 
-# --------- Autologin if remembered ----------- #
-
-if "user" in st.session_state and st.session_state.user:
-    user_email = st.session_state.user.user.email
-    st.success(f"Welcome back {user_email}")
-else:
-    # show login form
-
 # ---------- LOGIN ---------- #
 st.subheader("🔐 Login")
 
@@ -91,6 +83,18 @@ if st.button("Login"):
 
     except Exception as e:
         st.error(e)
+
+# --------- Autologin if remembered ----------- #
+
+if "user" in st.session_state and st.session_state.user:
+    user_email = st.session_state.user.user.email
+    st.success(f"Welcome back {user_email}")
+else:
+    # show login form
+
+    st.divider()
+
+# -------------- Householf profile -------- #
 
 st.subheader("👨‍👩‍👧 Household Profile")
 
