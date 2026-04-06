@@ -265,12 +265,12 @@ with tab1:
 
     total_cat = sum(categories.values())
     for k,v in categories.items():
-        if total_cat>0:
-            st.write(f"{k}: {(v/total_cat*100):.1f}%")
+    if total_cat>0:
+    st.write(f"{k}: {(v/total_cat*100):.1f}%")
 
     # What-if
-   st.subheader("🔮 What-if Simulator")
-
+    
+        st.subheader("🔮 What-if Simulator")
         reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
         rest_val = lifestyle_items["restaurants"][0]
         new_exp = total_expenses - rest_val + rest_val * (1 - reduction / 100)
@@ -281,11 +281,11 @@ with tab1:
 
     # Needs vs Wants
     st.subheader("📊 Needs vs Wants")
-        needs = housing + transport + food if 'food' in globals() else housing
-        wants = lifestyle
-        if income>0:
-        st.write(f"Needs: {needs/income*100:.1f}%")
-        st.write(f"Wants: {wants/income*100:.1f}%")
+    needs = housing + transport + food if 'food' in globals() else housing
+    wants = lifestyle
+    if income>0:
+    st.write(f"Needs: {needs/income*100:.1f}%")
+    st.write(f"Wants: {wants/income*100:.1f}%")
 
 # ================================
 # GOALS
