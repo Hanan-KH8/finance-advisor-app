@@ -281,9 +281,9 @@ with tab1:
 
     # Needs vs Wants
     st.subheader("📊 Needs vs Wants")
-    needs = housing + transport + food if 'food' in globals() else housing
-    wants = lifestyle
-    if income>0:
+        needs = housing + transport + food if 'food' in globals() else housing
+        wants = lifestyle
+        if income>0:
         st.write(f"Needs: {needs/income*100:.1f}%")
         st.write(f"Wants: {wants/income*100:.1f}%")
 
