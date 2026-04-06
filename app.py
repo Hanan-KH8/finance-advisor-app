@@ -265,15 +265,26 @@ other_items = section("✈️ Other",[
 # ================================
 # TOTALS
 # ================================
-def show_subtotal(title, items):
-    total_value = sum(v for v, _ in items)
 
-    col1, col2 = st.columns([2,1])
-    col1.write(title)
-    col2.metric("", f"{total_value:,.0f} SEK")
+def show_card(title, value, icon="💰"):
+    color = "#16a34a" if value >= 0 else "#dc2626"
 
-    return total_value
-
+    st.markdown(f"""
+    <div style="
+        background: white;
+        padding: 16px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 10px;
+    ">
+        <div style="font-size:14px; color:#666;">
+            {icon} {title}
+        </div>
+        <div style="font-size:22px; font-weight:600; color:{color};">
+            {value:,.0f} SEK
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ================================
 # CALCULATIONS
@@ -335,11 +346,16 @@ with tab1:
 
     st.subheader("🏦 Overview")
 
-    c1,c2,c3,c4 = st.columns(4)
-    c1.metric("Income",f"{income:,.0f}")
-    c2.metric("Expenses",f"{total_expenses:,.0f}")
-    c3.metric("Savings",f"{savings:,.0f}")
-    c4.metric("Net",f"{net:,.0f}")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        show_card("Income", income, "💵")
+        show_card("Savings", savings, "💰")
+
+    with col2:
+        show_card("Expenses", total_expenses, "💸")
+        show_card("Net", net, "🏦")
+    
 
     # Health
     if total_outflow > income:
