@@ -125,42 +125,69 @@ def section(title, items):
 income_items = section("💵 Income",[
 ("Salary","inc_salary",0),
 ("Bonus","inc_bonus",0),
+("Child support","inc_child",0),
+("Tax return","inc_tax",0),
 ("Other income","inc_other",0)
 ])
 
 loans_items = section("💳 Loans",[
 ("Mortgage","loan_mort",8000),
 ("Car loan","loan_car",0),
-("Credit cards","loan_cc",0)
+("Credit cards","loan_cc",0),
+("Other loans","loan_other_loan",0)
 ])
 
 housing_items = section("🏠 Housing",[
 ("Rent","house_rent",0),
-("Electricity","house_el",500)
+("Association fees","house_association",0),
+("Maintenance","house_maint",0),
+("Renovations","house_renovation",0),
+("Electricity","house_el",500),
+("House Insurance","house_insurance",500)
 ])
 
 transport_items = section("🚗 Transport",[
-("Fuel","trans_fuel",0),
 ("Public transport","trans_pub",0)
+("Fuel","trans_fuel",0),
+("Public transportation","trans_pub",0),
+("Car Insurance","trans_insurance",0),
+("Vehicle Tax","trans_tax",0),
+("Other fees and taxes","trans_other",0)
 ])
 
 lifestyle_items = section("🛍 Lifestyle",[
-("Food","life_food",0),
-("Restaurants","life_rest",0)
+("Groceries","life_food",0),
+("Restaurants","life_rest",0),
+("Entertainment","life_ent",0),
+("Clothes","life_clothes",0),
+("Grooming","life_groom",0),
+("Self-care","life_selfcare",0)
 ])
 
 subscriptions_items = section("📱 Subscriptions",[
 ("Phone","sub_phone",0),
-("Streaming","sub_stream",0)
+("Internet","sub_inter",0),
+("Gym","sub_gym",0),
+("Trade Union","sub_union",0),
+("Unemployment fund","sub_akassa",0),
+("Streaming","sub_stream",0),
+("Other","sub_other_suns",0)
+
 ])
 
 savings_items = section("💰 Savings",[
+("Buffer","sav_buf",0),
+("Future","sav_fut",0),
+("Children","sav_child",0),
 ("Investments","sav_inv",0),
-("Buffer","sav_buf",0)
+("Other","sav_other_sav",0)
+
 ])
 
 other_items = section("✈️ Other",[
-("Travel","other_travel",0)
+("Travel","other_travel",0),
+("Charity","other_charity",0),
+("Other","other_other",0)
 ])
 
 # ================================
