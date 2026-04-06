@@ -501,7 +501,26 @@ elif page == "📊 Insights":
     st.write(f"New balance: {new_net:,.0f} SEK")
     st.write(f"Improvement: {(new_net - net):,.0f} SEK")
 
+    st.divider()
 
+elif page == "🎯 Goals":
+
+    st.subheader("🎯 Financial Goals")
+
+    goal = st.number_input("Goal amount", 0, 1_000_000, 50000)
+    months = st.number_input("Months", 1, 120, 12)
+
+    need = goal / months
+
+    st.metric("Required / month", f"{need:,.0f}")
+
+    if savings >= need:
+        st.success("✅ On track")
+    else:
+        st.warning("⚠️ Increase savings")
+
+    progress = min(savings / need if need > 0 else 0, 1)
+    st.progress(progress)
     # ---- HEALTH STATUS ----
     if total_outflow > income:
         st.error("❌ Overspending")
@@ -512,6 +531,57 @@ elif page == "📊 Insights":
 
     st.divider()
 
+
+elif page == "💬 Advisor":
+
+    st.subheader("🤖 Financial Assistant")
+
+    for tip in insights:
+        st.write(tip)
+
+    q = st.text_input("Ask a question")
+
+    if q:
+        st.write(chat_response(q.lower()))
+
+elif page == "👤 Profile":
+
+    st.subheader("👤 Profile")
+
+    st.write(f"Email: {user_email}")
+
+    ref = get_reference_cost(ages)
+
+    st.subheader("🇸🇪 Benchmark")
+    st.write(f"Reference: {ref:,.0f}")
+    st.write(f"Your spending: {total_expenses:,.0f}")
+
+    st.divider()
+
+    # SAVE / LOAD
+    st.subheader("💾 Data")
+
+    month = st.selectbox("Month",["Jan","Feb","Mar"])
+    year = st.number_input("Year",2020,2100,2025)
+
+    if st.button("Save"):
+        supabase.table("budgets").insert({
+            "email":user_email,
+            "month":f"{month}-{year}",
+            "income":income,
+            "total_expenses":total_expenses
+        }).execute()
+        st.success("Saved")
+
+    if st.button("Load"):
+        res = supabase.table("budgets").select("*").eq("email",user_email).execute()
+        df = pd.DataFrame(res.data)
+        if not df.empty:
+            st.dataframe(df)
+
+      st.divider()
+  
+    
     # ---- QUICK INSIGHTS ----
     st.subheader("💡 Quick Insights")
 
