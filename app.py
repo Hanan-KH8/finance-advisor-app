@@ -124,18 +124,12 @@ def get_reference_cost(ages):
 # ---------- INCOME ---------- #
 with st.expander("💵 Income", expanded=True):
 
-    job, job_freq = input_with_frequency("Job", "income_job", 20000)
-
+    job, job_freq = input_with_frequency("Net Salary", "income_job", 2000000)
     bonus, bonus_freq = input_with_frequency("Bonus / commission", "income_bonus", 0)
-
     child_support, child_support_freq = input_with_frequency("Child support", "income_child_support", 0)
-
     other_support, other_support_freq = input_with_frequency("Other support", "income_other_support", 0)
-
     tax_return, tax_return_freq = input_with_frequency("Tax return", "income_tax_return", 0)
-
     other_income, other_income_freq = input_with_frequency("Other income", "income_other_income", 0)
-
 
 income = (
     job +
@@ -164,13 +158,9 @@ st.divider()
 with st.expander("💳 Loans"):
 
     mortgage_loan, mortgage_freq = input_with_frequency("Mortgage loan", "loans_mortgage", 8000)
-
     car_loan, car_freq = input_with_frequency("Car loan", "loans_car", 0)
-
     personal_loan, personal_freq = input_with_frequency("Personal loan", "loans_personal", 0)
-
     credit_cards, credit_freq = input_with_frequency("Credit cards", "loans_credit", 0)
-
     other_loans, other_loans_freq = input_with_frequency("Other loans", "loans_other_loans", 0)
 
 
@@ -192,27 +182,21 @@ st.divider()
 # ---------- HOUSING ---------- #
 with st.expander("🏠 Housing"):
 
-    rent, rent_freq = input_with_frequency("Rent", "housing_rent", 0)
-
-    electricity, electricity_freq = input_with_frequency("Electricity", "housing_electricity", 500)
-
-    heating, heating_freq = input_with_frequency("Heating", "housing_heating", 0)
-
-    maintenance, maintenance_freq = input_with_frequency("Maintenance", "housing_maintenance", 0)
-
     association, association_freq = input_with_frequency("Association fee", "housing_association", 0)
-
+    rent, rent_freq = input_with_frequency("Rent", "housing_rent", 0)
+    electricity, electricity_freq = input_with_frequency("Electricity", "housing_electricity", 500)
+    heating, heating_freq = input_with_frequency("Heating", "housing_heating", 0)
+    maintenance, maintenance_freq = input_with_frequency("Maintenance", "housing_maintenance", 0)
     renovation, renovation_freq = input_with_frequency("Renovation", "housing_renovation", 0)
-
     housing_other, housing_other_freq = input_with_frequency("Other housing", "housing_other", 0)
 
 
 housing = (
+    association +
     rent +
     electricity +
     heating +
     maintenance +
-    association +
     renovation +
     housing_other
     )
@@ -260,7 +244,7 @@ st.divider()
 
 with st.expander("🛍 Lifestyle"):
 
-    food, food_freq = input_with_frequency ("Food", "lifestyle_food", 0 )
+    food, food_freq = input_with_frequency ("Groceries", "lifestyle_food", 0 )
     restaurants, restaurants_freq = input_with_frequency ( "Restaurants", "lifestyle_restaurants", 0 )
     entertainment, entertainment_freq = input_with_frequency ( "Entertainment", "lifestyle_entertainment", 0 )
     clothes, clothes_freq = input_with_frequency ( "Clothes", "lifestyle_clothes", 0 )
