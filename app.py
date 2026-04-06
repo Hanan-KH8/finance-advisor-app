@@ -33,21 +33,6 @@ div[data-testid="stMetric"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- LOGIN ---------- #
-
-st.subheader("🔐 Login")
-
-login_mode = st.radio("Choose", ["Login", "Sign Up"], key="auth_mode")
-
-email = st.text_input("Email", key="auth_email")
-password = st.text_input("Password", type="password", key="auth_password")
-
-remember_me = st.checkbox("Remember me", key="auth_remember")
-
-# Initialize session
-if "user" not in st.session_state:
-    st.session_state.user = None
-
 # ---------- SIGN UP ---------- #
 if login_mode == "Sign Up":
 
