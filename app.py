@@ -326,6 +326,40 @@ subscriptions_items =[
 
 st.divider()
 
+# ---------- SAVINGS ---------- #
+
+with st.expander("💰 Savings & Investments"):
+
+    buffer, buffer_freq = input_with_frequency("Emergency buffer", "saving_buffer", 0)
+
+    future, future_freq = input_with_frequency("Future goals", "saving_future", 0)
+
+    investments, investments_freq = input_with_frequency("Investments", "saving_investments", 0)
+
+    crypto, crypto_freq = input_with_frequency("Crypto", "saving_crypto", 0)
+
+    children, children_freq = input_with_frequency("Children savings", "saving_children", 0)
+
+    other_savings, other_savings_freq = input_with_frequency("Other savings", "saving_other", 0)
+
+
+savings_total = (
+    buffer + future + investments + crypto + children + other_savings
+)
+
+st.success(f"Total Savings: {savings_total:,.0f} SEK")
+
+savings_items = [
+    (buffer, buffer_freq),
+    (future, future_freq),
+    (investments, investments_freq),
+    (crypto, crypto_freq),
+    (children, children_freq),
+    (other_savings, other_savings_freq),
+]
+
+st.divider()
+
 # ---------- OTHER ---------- #
 with st.expander("✈️ Other"):
 
@@ -348,7 +382,11 @@ st.divider()
 # ---------- TOTAL ---------- #
 
 total_expenses = housing + transport + lifestyle + subscriptions + loans + other_total
-remaining = income - total_expenses
+
+total_outflow = total_expenses + savings_total
+
+unallocated = income - total_outflow
+
 savings_rate = (remaining / income * 100) if income > 0 else 0
 
 #-------- All Items ----- #
@@ -359,6 +397,7 @@ all_items = (
     loans_items +
     lifestyle_items +
     subscriptions_items +
+    savings_items +
     other_items
 )
 
@@ -390,25 +429,16 @@ st.info(f"💡 Your biggest spending category is {top_category}")
 
 st.divider()    
 
-# --------- Frequency analysis -------- #
+# --------- Financial Overview -------- #
 
-st.subheader("📊 Spending by Frequency")
+st.subheader("🏦 Monthly Financial Overview")
 
-freq_data = {
-    "Monthly": 0,
-    "Annual": 0,
-    "Occasional": 0
-}
+col1, col2, col3, col4 = st.columns(4)
 
-for value, freq in all_items:
-    if freq in freq_data:
-        freq_data[freq] += value
-
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Monthly", f"{freq_data['Monthly']:,.0f} SEK")
-col2.metric("Annual", f"{freq_data['Annual']:,.0f} SEK")
-col3.metric("Occasional", f"{freq_data['Occasional']:,.0f} SEK")
+col1.metric("Income", f"{income:,.0f}")
+col2.metric("Expenses", f"{total_expenses:,.0f}")
+col3.metric("Savings", f"{savings_total:,.0f}")
+col4.metric("Unallocated", f"{unallocated:,.0f}")
 
 st.divider()
 
@@ -434,6 +464,35 @@ if total > 0:
 
 st.divider()
 
+# ------------- Visual Breakdown ---------- #
+
+st.subheader("📊 Money Allocation")
+
+chart_data = pd.DataFrame({
+    "Category": ["Expenses", "Savings", "Unallocated"],
+    "Amount": [total_expenses, savings_total, max(unallocated, 0)]
+})
+
+st.bar_chart(chart_data.set_index("Category"))
+
+st.divider()
+# ------------ Overspend + Health Check ------------- # 
+
+st.subheader("🚨 Financial Health")
+
+if total_outflow > income:
+    st.error("❌ You are overspending — expenses + savings exceed income")
+
+elif unallocated < 0:
+    st.warning("⚠️ Your plan is not sustainable")
+
+elif savings_total < income * 0.1:
+    st.warning("⚠️ Low savings rate — aim for at least 10–20%")
+
+else:
+    st.success("✅ Healthy financial structure")
+
+st.divider()
 
 # ---------- Financial Health Score ---------- #
 
@@ -465,6 +524,21 @@ elif score > 60:
     st.info("Good, but room for improvement")
 else:
     st.warning("Needs attention")
+
+st.divider()
+
+# ---------- Saving Opportunity ---------- #
+
+st.subheader("💡 Opportunities")
+
+if lifestyle > income * 0.25:
+    st.write("👉 Reduce lifestyle spending to increase savings")
+
+if subscriptions > 500:
+    st.write("👉 Review subscriptions — potential savings")
+
+if transport > income * 0.15:
+    st.write("👉 Transport costs are high — optimize routes or usage")
 
 st.divider()
 
@@ -525,6 +599,35 @@ with tab1:
     col2.metric("Expenses", f"{total_expenses:,.0f}")
     col3.metric("Savings", f"{remaining:,.0f}")
 
+    # ---------- Card style UI ---------- #
+
+    st.markdown("""
+<style>
+.metric-card {
+    background: white;
+    padding: 15px;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 10px;
+}
+</style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+
+    st.subheader("🏦 Your Financial Snapshot")
+
+    col1, col2 = st.columns(2)
+    col1.metric("Income", f"{income:,.0f}")
+    col2.metric("Unallocated", f"{unallocated:,.0f}")
+
+    col3, col4 = st.columns(2)
+    col3.metric("Expenses", f"{total_expenses:,.0f}")
+    col4.metric("Savings", f"{savings_total:,.0f}")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    
     # ---------- WHAT-IF SIMULATOR ---------- #
 
     st.subheader("🔮 What-if Simulator")
