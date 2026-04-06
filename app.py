@@ -269,11 +269,15 @@ with tab1:
             st.write(f"{k}: {(v/total_cat*100):.1f}%")
 
     # What-if
-    st.subheader("🔮 What-if")
-    reduction = st.slider("Reduce restaurants (%)",0,50,10)
-    rest_val = dict(lifestyle_items)[0] if lifestyle_items else 0
-    new_exp = total_expenses - rest_val + rest_val*(1-reduction/100)
-    st.write(f"New savings: {income-new_exp:,.0f}")
+   st.subheader("🔮 What-if Simulator")
+
+    reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
+    rest_val = lifestyle_items["life_rest"][0]
+    new_exp = total_expenses - rest_val + rest_val * (1 - reduction / 100)
+    new_savings = income - new_exp
+    st.write(f"New savings: {new_savings:,.0f} SEK/month")
+    st.write(f"Improvement: {(new_savings - net):,.0f} SEK")
+
 
     # Needs vs Wants
     st.subheader("📊 Needs vs Wants")
