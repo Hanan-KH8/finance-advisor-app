@@ -94,7 +94,7 @@ def monthly_value(amount, frequency):
 
 
 def input_with_frequency(label, key, default=0):
-    amount = st.number_input(label, 0, 200000, default, key=f"{key}_amount")
+    amount = st.number_input(label, 0, 999999999, default, key=f"{key}_amount")
 
     freq = st.selectbox(
         f"{label} frequency",
@@ -124,7 +124,7 @@ def get_reference_cost(ages):
 # ---------- INCOME ---------- #
 with st.expander("💵 Income", expanded=True):
 
-    job, job_freq = input_with_frequency("Net Salary", "income_job", 2000000)
+    job, job_freq = input_with_frequency("Net Salary", "income_job", 0)
     bonus, bonus_freq = input_with_frequency("Bonus / commission", "income_bonus", 0)
     child_support, child_support_freq = input_with_frequency("Child support", "income_child_support", 0)
     other_support, other_support_freq = input_with_frequency("Other support", "income_other_support", 0)
