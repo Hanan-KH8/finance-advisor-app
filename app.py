@@ -271,12 +271,12 @@ with tab1:
     # What-if
    st.subheader("🔮 What-if Simulator")
 
-    reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
-    rest_val = lifestyle_items["restaurants"][0]
-    new_exp = total_expenses - rest_val + rest_val * (1 - reduction / 100)
-    new_savings = income - new_exp
-    st.write(f"New savings: {new_savings:,.0f} SEK/month")
-    st.write(f"Improvement: {(new_savings - net):,.0f} SEK")
+        reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
+        rest_val = lifestyle_items["restaurants"][0]
+        new_exp = total_expenses - rest_val + rest_val * (1 - reduction / 100)
+        new_savings = income - new_exp
+        st.write(f"New savings: {new_savings:,.0f} SEK/month")
+        st.write(f"Improvement: {(new_savings - net):,.0f} SEK")
 
 
     # Needs vs Wants
