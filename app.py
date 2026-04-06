@@ -445,7 +445,7 @@ page = st.radio(
 
 if page == "🏠 Home":
 
-    st.subheader("🏦 Your Money")
+    st.subheader("🏦 Available balance")
 
     # ---- BALANCE CARD ----
     show_card("Net Balance", net, "💳")
@@ -460,6 +460,47 @@ if page == "🏠 Home":
     col4.metric("Savings Rate", f"{savings_rate:.0f}%")
 
     st.divider()
+
+elif page == "📊 Insights":
+
+    st.subheader("📊 Spending Pattern")
+
+    st.bar_chart(pd.DataFrame({
+        "Type":["Monthly","Annual","Occasional"],
+        "Amount":[freq_data["Monthly"],freq_data["Annual"],freq_data["Occasional"]]
+    }).set_index("Type"))
+
+    st.subheader("📊 Category Breakdown")
+
+    categories = {
+        "Housing": housing,
+        "Transport": transport,
+        "Lifestyle": lifestyle,
+        "Subscriptions": subscriptions,
+        "Loans": loans
+    }
+
+    total_cat = sum(categories.values())
+
+    for k,v in categories.items():
+        if total_cat > 0:
+            st.write(f"{k}: {(v/total_cat*100):.1f}%")
+
+    st.divider()
+
+    # ---- WHAT IF ----
+    st.subheader("🔮 Scenario Simulator")
+
+    reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
+
+    rest_val = lifestyle_items[1][0]
+
+    new_exp = total_expenses - rest_val + rest_val * (1 - reduction / 100)
+    new_net = income - new_exp
+
+    st.write(f"New balance: {new_net:,.0f} SEK")
+    st.write(f"Improvement: {(new_net - net):,.0f} SEK")
+
 
     # ---- HEALTH STATUS ----
     if total_outflow > income:
