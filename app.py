@@ -558,8 +558,17 @@ elif page == "👤 Profile":
     # SAVE / LOAD
     st.subheader("💾 Data")
 
-    month = st.selectbox("Month",["Jan","Feb","Mar"])
-    year = st.number_input("Year",2020,2100,2025)
+    month = st.selectbox(
+    "Month",
+    ["Jan","Feb","Mar"],
+    key="save_month"
+    )
+
+    year = st.number_input(
+    "Year",
+    2020, 2100, 2025,
+    key="save_year"
+    )
 
     if st.button("Save"):
         supabase.table("budgets").insert({
