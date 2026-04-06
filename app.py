@@ -33,6 +33,14 @@ div[data-testid="stMetric"] {
 </style>
 """, unsafe_allow_html=True)
 
+# --------- Autologin if remembered ----------- #
+
+if "user" in st.session_state and st.session_state.user:
+    user_email = st.session_state.user.user.email
+    st.success(f"Welcome back {user_email}")
+else:
+    # show login form
+
 # ---------- LOGIN ---------- #
 st.subheader("🔐 Login")
 
@@ -66,6 +74,23 @@ if not st.session_state.user:
 
 user_email = st.session_state.user.user.email
 st.success(f"Logged in as: {user_email}")
+
+if st.button("Login"):
+    try:
+        user = supabase.auth.sign_in_with_password({
+            "email": email,
+            "password": password
+        })
+
+        st.session_state.user = user
+
+        if remember_me:
+            st.session_state["remember"] = True
+
+        st.success("Logged in!")
+
+    except Exception as e:
+        st.error(e)
 
 st.subheader("👨‍👩‍👧 Household Profile")
 
@@ -339,6 +364,32 @@ all_items = (
 
 st.divider()
 
+# ------- Spending by Category --------- #
+
+st.subheader("📊 Spending by Category")
+
+category_data = {
+    "Housing": housing,
+    "Transport": transport,
+    "Lifestyle": lifestyle,
+    "Subscriptions": subscriptions,
+    "Loans": loans,
+    "Other": other_total
+}
+
+total = sum(category_data.values())
+
+for category, value in category_data.items():
+    if total > 0:
+        percent = (value / total) * 100
+        st.write(f"{category}: {percent:.1f}%")
+
+top_category = max(category_data, key=category_data.get)
+
+st.info(f"💡 Your biggest spending category is {top_category}")
+
+st.divider()    
+
 # --------- Frequency analysis -------- #
 
 st.subheader("📊 Spending by Frequency")
@@ -383,21 +434,68 @@ if total > 0:
 
 st.divider()
 
+
+# ---------- Financial Health Score ---------- #
+
+st.subheader("🏆 Financial Health Score")
+
+score = 100
+
+# Savings impact
+if savings_rate < 10:
+    score -= 30
+elif savings_rate < 20:
+    score -= 10
+
+# Housing impact
+if housing / income > 0.4:
+    score -= 20
+
+# Frequency impact
+if freq_data["Occasional"] > freq_data["Monthly"] * 0.5:
+    score -= 15
+
+score = max(0, score)
+
+st.metric("Score", f"{score}/100")
+
+if score > 80:
+    st.success("Excellent financial health")
+elif score > 60:
+    st.info("Good, but room for improvement")
+else:
+    st.warning("Needs attention")
+
+st.divider()
+
 # ---------- AI FUNCTIONS ---------- #
 
 def generate_advice():
     advice = []
+
+    total = sum(freq_data.values())
+
+    if total > 0:
+        monthly_ratio = freq_data["Monthly"] / total
+        annual_ratio = freq_data["Annual"] / total
+        occasional_ratio = freq_data["Occasional"] / total
+
+        if annual_ratio > 0.3:
+            advice.append("📆 A large part of your spending is annual — plan ahead")
+
+        if occasional_ratio > 0.3:
+            advice.append("🎯 Irregular spending is high — build an emergency buffer")
+
+        if monthly_ratio > 0.6:
+            advice.append("✅ Your spending is stable and predictable")
+
     if savings_rate < 10:
-        advice.append("⚠️ Try increasing savings")
+        advice.append("⚠️ Your savings rate is low")
+
     if housing > income * 0.4:
-        advice.append("🏠 Housing too high")
+        advice.append("🏠 Housing costs are high")
+
     return advice
-
-def chat_response(q):
-    if "save" in q:
-        return "Reduce restaurants and subscriptions"
-    return "Focus on saving more"
-
 st.divider()
 
 # ---------- TABS ---------- #
