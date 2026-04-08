@@ -534,18 +534,18 @@ st.divider()
 # INSIGHTS
 # =========================
 
-elif page == "📊 Insights":
+    elif page == "📊 Insights":
 
-    st.subheader("📊 Spending Pattern")
+        st.subheader("📊 Spending Pattern")
 
-    st.bar_chart(pd.DataFrame({
+        st.bar_chart(pd.DataFrame({
         "Type":["Monthly","Annual","Occasional"],
         "Amount":[freq_data["Monthly"],freq_data["Annual"],freq_data["Occasional"]]
-    }).set_index("Type"))
+        }).set_index("Type"))
 
-    st.subheader("📊 Category Breakdown")
+        st.subheader("📊 Category Breakdown")
 
-    categories = {
+        categories = {
         "Housing": housing,
         "Transport": transport,
         "Lifestyle": lifestyle,
