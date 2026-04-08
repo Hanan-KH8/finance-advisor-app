@@ -393,31 +393,63 @@ if page=="🏠 Home":
         for i in insights:
             st.write(i)
 
-    # =========================
-    # CATEGORY CARDS
-    # =========================
-    st.subheader("💸 Spending")
+# ================================
+# INSIGHTS
+# ================================
+elif page=="📊 Insights":
 
-    c1, c2 = st.columns(2)
-    c1.markdown(show_card_html("Housing", housing, "🏠"))
-    c2.markdown(show_card_html("Transport", transport, "🚗"))
+    st.bar_chart(pd.DataFrame({
+        "Type":["Monthly","Annual","Occasional"],
+        "Amount":[freq_data["Monthly"],freq_data["Annual"],freq_data["Occasional"]]
+    }).set_index("Type"))
 
-    c3, c4 = st.columns(2)
-    c3.markdown(show_card_html("Lifestyle", lifestyle, "🛍"))
-    c4.markdown(show_card_html("Subscriptions", subscriptions, "📱"))
+# ================================
+# GOALS
+# ================================
+elif page=="🎯 Goals":
 
-    # =========================
-    # HEALTH STATUS
-    # =========================
-    st.subheader("🧠 Financial Health")
+    goal=st.number_input("Goal",0,1_000_000,50000)
+    months=st.number_input("Months",1,120,12)
 
-    if total_outflow > income:
-        st.error("❌ You are overspending")
-    elif savings_rate < 10:
-        st.warning("⚠️ Low savings rate")
-    else:
-        st.success("✅ Healthy financial position")
+    need=goal/months
+    st.metric("Monthly",f"{need:,.0f}")
 
+    progress=min(savings/need if need>0 else 0,1)
+    st.progress(progress)
 
-st.divider()
+# ================================
+# ADVISOR
+# ================================
+elif page=="💬 Advisor":
 
+    for tip in insights:
+        st.write(tip)
+
+    q=st.text_input("Ask AI")
+    if q:
+        st.write(chat_response(q.lower()))
+
+# ================================
+# PROFILE
+# ================================
+elif page=="👤 Profile":
+
+    st.write(user_email)
+
+    month=st.selectbox("Month",["Jan","Feb","Mar"],key="save_month")
+    year=st.number_input("Year",2020,2100,2025,key="save_year")
+
+    if st.button("Save"):
+        supabase.table("budgets").insert({
+            "email":user_email,
+            "month":f"{month}-{year}",
+            "income":income,
+            "total_expenses":expenses
+        }).execute()
+        st.success("Saved")
+
+    if st.button("Load"):
+        res=supabase.table("budgets").select("*").eq("email",user_email).execute()
+        df=pd.DataFrame(res.data)
+        if not df.empty:
+            st.dataframe(df)
