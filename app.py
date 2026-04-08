@@ -384,7 +384,7 @@ if page == "🏠 Home":
     # =========================
     show_card(
         "Balance",
-        net,"#e8f5e9" 
+        net,"#e8f5e9", 
         subtitle="Available after expenses & savings",
         icon="💳",
         color="#e8f5e9" if net >= 0 else "#fdecea"
