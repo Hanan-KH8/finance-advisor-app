@@ -377,22 +377,9 @@ page = st.radio("",["🏠 Home","📊 Insights","🎯 Goals","💬 Advisor","�
 # ================================
 # HOME
 # ================================
-if page == "🏠 Home":
+if page=="🏠 Home":
 
-    # =========================
-    # HERO (Main balance)
-    # =========================
-    show_card(
-        "Balance",
-        net,"#e8f5e9", 
-        subtitle="Available after expenses & savings",
-        icon="💳",
-        color="#e8f5e9" if net >= 0 else "#fdecea"
-    )
-
-    # =========================
-    # QUICK METRICS (GRID)
-    # =========================
+    show_card("Balance",net,"#e8f5e9" if net>=0 else "#fdecea")
 
     col1,col2=st.columns(2)
     col1.metric("Income",f"{income:,.0f}")
@@ -405,9 +392,6 @@ if page == "🏠 Home":
     if insights:
         for i in insights:
             st.write(i)
-
-    st.divider()
-
 
     # =========================
     # CATEGORY CARDS
