@@ -245,12 +245,6 @@ def chat_response(q):
 # ================================
 # INPUT SECTIONS
 # ================================
-def section(title, items):
-    with st.expander(title):
-        data=[]
-        for label,key,default in items:
-            data.append(input_freq(label,key,default))
-        return data
 
 income_items = section("💵 Income",[
 ("Salary","inc_salary",0),
@@ -347,69 +341,41 @@ def show_card(title, value, subtitle="", icon="💰", color="#ffffff"):
 # ================================
 # CALCULATIONS
 # ================================
-def total(items): return sum(v for v,_ in items)
-
 income = total(income_items)
-loans = total(loans_items)
 housing = total(housing_items)
 transport = total(transport_items)
 lifestyle = total(lifestyle_items)
 subscriptions = total(subscriptions_items)
+loans = total(loans_items)
 savings = total(savings_items)
 other = total(other_items)
 
-total_expenses = housing + transport + lifestyle + subscriptions + loans + other
-total_outflow = total_expenses + savings
-net = income - total_outflow
-
-savings_rate = (savings/income*100) if income>0 else 0
-
-all_items = (
-    income_items + loans_items + housing_items + transport_items +
-    lifestyle_items + subscriptions_items + savings_items + other_items
-)
+expenses = housing+transport+lifestyle+subscriptions+loans+other
+outflow = expenses+savings
+net = income-outflow
 
 # ================================
 # FREQUENCY
 # ================================
-freq_data = {"Monthly":0,"Annual":0,"Occasional":0}
+all_items = income_items+housing_items+transport_items+lifestyle_items+subscriptions_items+loans_items+savings_items+other_items
 
+freq_data={"Monthly":0,"Annual":0,"Occasional":0}
 for v,f in all_items:
-    freq_data[f]+=v
+    if f in freq_data:
+        freq_data[f]+=v
 
 # ================================
-# FINANCIAL SCORE ENGINE
+# SCORE
 # ================================
-
-st.subheader("🏆 Financial Score")
-
-color = "#e8f5e9" if score > 70 else "#fff3cd" if score > 50 else "#fdecea"
-
-show_card(
-    "Your Score",
-    score,
-    subtitle="Based on savings, spending & stability",
-    icon="⭐",
-    color=color
-)
+score, insights = financial_score_engine(income,savings,expenses,loans,freq_data)
 
 # ================================
-# SMART INSIGHTS
+# NAVIGATION
 # ================================
-st.subheader("💡 Smart Insights")
-
-if lifestyle > income * 0.25:
-    st.info("🍽 Lifestyle spending is high")
-
-if subscriptions > 500:
-    st.info("📱 You may have unused subscriptions")
-
-if loans > income * 0.3:
-    st.warning("💳 Debt level is high")
-
+page = st.radio("",["🏠 Home","📊 Insights","🎯 Goals","💬 Advisor","👤 Profile"],horizontal=True)
 
 # ================================
-# DASHBOARD
+# HOME
 # ================================
 if page == "🏠 Home":
 
@@ -417,8 +383,8 @@ if page == "🏠 Home":
     # HERO (Main balance)
     # =========================
     show_card(
-        "Total Balance",
-        net,
+        "Balance",
+        net,"#e8f5e9" 
         subtitle="Available after expenses & savings",
         icon="💳",
         color="#e8f5e9" if net >= 0 else "#fdecea"
@@ -428,13 +394,17 @@ if page == "🏠 Home":
     # QUICK METRICS (GRID)
     # =========================
 
-    col1, col2 = st.columns(2)
-    col1.metric("Income", f"{income:,.0f}")
-    col2.metric("Expenses", f"{total_expenses:,.0f}")
+    col1,col2=st.columns(2)
+    col1.metric("Income",f"{income:,.0f}")
+    col2.metric("Expenses",f"{expenses:,.0f}")
 
-    col3, col4 = st.columns(2)
-    col3.metric("Savings", f"{savings:,.0f}")
-    col4.metric("Savings Rate", f"{savings_rate:.0f}%")
+    col3,col4=st.columns(2)
+    col3.metric("Savings",f"{savings:,.0f}")
+    col4.metric("Score",f"{score}/100")
+
+    if insights:
+        for i in insights:
+            st.write(i)
 
     st.divider()
 
