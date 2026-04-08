@@ -272,6 +272,7 @@ housing_items = section("🏠 Housing",[
 
 transport_items = section("🚗 Transport",[
 ("Public transport","trans_pub",0),
+("Parking","trans_park",0),
 ("Fuel","trans_fuel",0),
 ("Car Insurance","trans_insurance",0),
 ("Vehicle Tax","trans_tax",0),
