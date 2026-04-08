@@ -389,7 +389,9 @@ page = st.radio("",["🏠 Home","📊 Insights","🎯 Goals","💬 Advisor","�
 # ================================
 if page=="🏠 Home":
 
-    show_card("Balance", net, icon="💳", color="#e8f5e9")
+    balance_color = "#e8f5e9" if net >= 0 else "#fdecea"
+
+    show_card("Balance", net, icon="💳", color=balance_color)
 
     col1,col2=st.columns(2)
     col1.metric("Income",f"{income:,.0f}")
