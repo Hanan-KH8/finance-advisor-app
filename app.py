@@ -185,125 +185,62 @@ with col2:
 # ================================
 # HELPERS
 # ================================
-def monthly_value(amount, freq):
-    return amount if freq == "Monthly" else amount / 12
+def monthly_value(amount,freq):
+    return amount if freq=="Monthly" else amount/12
 
-def input_freq(label, key, default=0):
-    val = st.number_input(label, 0, 999999999, default, key=f"{key}_val")
-    freq = st.selectbox("Frequency", ["Monthly","Annual","Occasional"], key=f"{key}_freq")
-    return monthly_value(val, freq), freq
+def input_freq(label,key,default=0):
+    val = st.number_input(label,0,999999999,default,key=f"{key}_val")
+    freq = st.selectbox("Frequency",["Monthly","Annual","Occasional"],key=f"{key}_freq")
+    return monthly_value(val,freq),freq
 
-def get_reference_cost(ages):
-    total = 0
-    for age in ages:
-        if age < 6: total += 3000
-        elif age < 18: total += 4000
-        else: total += 5000
-    return total
+def section(title,items):
+    with st.expander(title):
+        return [input_freq(l,k,d) for l,k,d in items]
+
+def total(items):
+    return sum(v for v,_ in items)
+
+def show_card(title,value,color="#fff"):
+    st.markdown(f"""
+    <div style="padding:16px;border-radius:16px;background:{color};
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:10px;">
+    <div style="color:#666;font-size:13px;">{title}</div>
+    <div style="font-size:24px;font-weight:700;">{value:,.0f} SEK</div>
+    </div>
+    """,unsafe_allow_html=True)
+
+def financial_score_engine(income,savings,expenses,loans,freq_data):
+    score=100
+    insights=[]
+
+    savings_rate=(savings/income*100) if income>0 else 0
+
+    if savings_rate<10:
+        score-=20
+        insights.append("⚠️ Low savings")
+
+    if expenses/income>0.8 if income>0 else False:
+        score-=20
+        insights.append("⚠️ High spending")
+
+    if loans/income>0.4 if income>0 else False:
+        score-=20
+        insights.append("⚠️ High debt")
+
+    irregular=(freq_data["Annual"]+freq_data["Occasional"])
+    total_freq=sum(freq_data.values())
+
+    if total_freq>0 and irregular/total_freq>0.4:
+        score-=15
+        insights.append("⚠️ Irregular spending")
+
+    return max(0,score),insights
 
 def chat_response(q):
-    if "save" in q: return "Reduce lifestyle or subscriptions"
+    if "save" in q: return "Reduce lifestyle spending"
     if "debt" in q: return "Pay high-interest loans first"
-    return "Improve savings and reduce waste"
+    return "Focus on improving savings"
 
-def financial_score_engine(
-    income,
-    savings,
-    expenses,
-    loans,
-    freq_data,
-):
-    score = 100
-    details = []
-
-    # -------------------------
-    # Mini Cards
-    # -------------------------
-    
-def show_card_html(title, value, icon):
-    return f"""
-    <div style="
-        background:white;
-        padding:12px;
-        border-radius:14px;
-        box-shadow:0 3px 10px rgba(0,0,0,0.05);
-        margin-bottom:10px;
-    ">
-        <div style="font-size:13px;color:#666;">{icon} {title}</div>
-        <div style="font-size:18px;font-weight:600;">{value:,.0f} SEK</div>
-    </div>
-    """
-
-    # -------------------------
-    # 1. Savings Score (30 pts)
-    # -------------------------
-    savings_rate = (savings / income * 100) if income > 0 else 0
-
-    if savings_rate < 5:
-        score -= 25
-        details.append("❌ Very low savings")
-    elif savings_rate < 10:
-        score -= 15
-        details.append("⚠️ Low savings")
-    elif savings_rate >= 20:
-        details.append("✅ Strong savings habit")
-
-    # -------------------------
-    # 2. Expense Ratio (25 pts)
-    # -------------------------
-    expense_ratio = expenses / income if income > 0 else 1
-
-    if expense_ratio > 0.9:
-        score -= 25
-        details.append("❌ Spending almost all income")
-    elif expense_ratio > 0.75:
-        score -= 10
-        details.append("⚠️ High spending level")
-
-    # -------------------------
-    # 3. Stability (20 pts)
-    # -------------------------
-    total = sum(freq_data.values())
-    if total > 0:
-        irregular = (freq_data["Annual"] + freq_data["Occasional"]) / total
-
-        if irregular > 0.5:
-            score -= 20
-            details.append("❌ Unstable spending pattern")
-        elif irregular > 0.3:
-            score -= 10
-            details.append("⚠️ Moderate irregular spending")
-
-    # -------------------------
-    # 4. Debt Load (15 pts)
-    # -------------------------
-    debt_ratio = loans / income if income > 0 else 0
-
-    if debt_ratio > 0.4:
-        score -= 15
-        details.append("❌ High debt burden")
-    elif debt_ratio > 0.2:
-        score -= 8
-        details.append("⚠️ Moderate debt level")
-
-    # -------------------------
-    # 5. Buffer (10 pts)
-    # -------------------------
-    if savings_rate < 5:
-        score -= 10
-        details.append("⚠️ No financial buffer")
-
-    score = max(0, score)
-
-    return score, details
-
-# ================================
-# HOUSEHOLD
-# ================================
-st.subheader("👨‍👩‍👧 Household")
-
-members = st.number_input("Members",1,10,1)
-ages = [st.number_input(f"Age {i+1}",0,100,30,key=f"age{i}") for i in range(members)]
 
 # ================================
 # INPUT SECTIONS
