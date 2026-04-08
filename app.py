@@ -29,6 +29,14 @@ st.markdown("""
     max-width: 420px;
     padding-top: 1rem;
 }
+
+h1, h2, h3 {
+    font-weight: 600;
+}
+
+.stMetric {
+    text-align: center;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -209,6 +217,24 @@ def financial_score_engine(
     details = []
 
     # -------------------------
+    # Mini Cards
+    # -------------------------
+    
+    def show_card_html(title, value, icon):
+    return f"""
+    <div style="
+        background:white;
+        padding:12px;
+        border-radius:14px;
+        box-shadow:0 3px 10px rgba(0,0,0,0.05);
+        margin-bottom:10px;
+    ">
+        <div style="font-size:13px;color:#666;">{icon} {title}</div>
+        <div style="font-size:18px;font-weight:600;">{value:,.0f} SEK</div>
+    </div>
+    """
+
+    # -------------------------
     # 1. Savings Score (30 pts)
     # -------------------------
     savings_rate = (savings / income * 100) if income > 0 else 0
@@ -360,22 +386,23 @@ other_items = section("✈️ Other",[
 # TOTALS
 # ================================
 
-def show_card(title, value, icon="💰"):
-    color = "#16a34a" if value >= 0 else "#dc2626"
-
+def show_card(title, value, subtitle="", icon="💰", color="#ffffff"):
     st.markdown(f"""
     <div style="
-        background: white;
-        padding: 16px;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        margin-bottom: 10px;
+        background: linear-gradient(135deg, {color}, #f8f9fa);
+        padding: 18px;
+        border-radius: 18px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        margin-bottom: 12px;
     ">
-        <div style="font-size:14px; color:#666;">
+        <div style="font-size:13px; color:#666;">
             {icon} {title}
         </div>
-        <div style="font-size:22px; font-weight:600; color:{color};">
+        <div style="font-size:26px; font-weight:700; margin-top:4px;">
             {value:,.0f} SEK
+        </div>
+        <div style="font-size:12px; color:#999;">
+            {subtitle}
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -417,37 +444,53 @@ for v,f in all_items:
 # FINANCIAL SCORE ENGINE
 # ================================
 
-score, insights = financial_score_engine(
-    income,
-    savings,
-    total_expenses,
-    loans,
-    freq_data
+st.subheader("🏆 Financial Score")
+
+color = "#e8f5e9" if score > 70 else "#fff3cd" if score > 50 else "#fdecea"
+
+show_card(
+    "Your Score",
+    score,
+    subtitle="Based on savings, spending & stability",
+    icon="⭐",
+    color=color
 )
 
-st.subheader("🏆 Financial Health Score")
-st.metric("Score", f"{score}/100")
+# ================================
+# SMART INSIGHTS
+# ================================
+st.subheader("💡 Smart Insights")
 
-for i in insights:
-    st.write(i)
+if lifestyle > income * 0.25:
+    st.info("🍽 Lifestyle spending is high")
+
+if subscriptions > 500:
+    st.info("📱 You may have unused subscriptions")
+
+if loans > income * 0.3:
+    st.warning("💳 Debt level is high")
+
 
 # ================================
 # DASHBOARD
 # ================================
-page = st.radio(
-    "",
-    ["🏠 Home", "📊 Insights", "🎯 Goals", "💬 Advisor", "👤 Profile"],
-    horizontal=True
-)
-
 if page == "🏠 Home":
 
-    st.subheader("🏦 Available balance")
+    # =========================
+    # HERO (Main balance)
+    # =========================
+    show_card(
+        "Total Balance",
+        net,
+        subtitle="Available after expenses & savings",
+        icon="💳",
+        color="#e8f5e9" if net >= 0 else "#fdecea"
+    )
 
-    # ---- BALANCE CARD ----
-    show_card("Net Balance", net, "💳")
+    # =========================
+    # QUICK METRICS (GRID)
+    # =========================
 
-    # ---- GRID (KEY METRICS) ----
     col1, col2 = st.columns(2)
     col1.metric("Income", f"{income:,.0f}")
     col2.metric("Expenses", f"{total_expenses:,.0f}")
@@ -457,6 +500,39 @@ if page == "🏠 Home":
     col4.metric("Savings Rate", f"{savings_rate:.0f}%")
 
     st.divider()
+
+
+    # =========================
+    # CATEGORY CARDS
+    # =========================
+    st.subheader("💸 Spending")
+
+    c1, c2 = st.columns(2)
+    c1.markdown(show_card_html("Housing", housing, "🏠"))
+    c2.markdown(show_card_html("Transport", transport, "🚗"))
+
+    c3, c4 = st.columns(2)
+    c3.markdown(show_card_html("Lifestyle", lifestyle, "🛍"))
+    c4.markdown(show_card_html("Subscriptions", subscriptions, "📱"))
+
+    # =========================
+    # HEALTH STATUS
+    # =========================
+    st.subheader("🧠 Financial Health")
+
+    if total_outflow > income:
+        st.error("❌ You are overspending")
+    elif savings_rate < 10:
+        st.warning("⚠️ Low savings rate")
+    else:
+        st.success("✅ Healthy financial position")
+
+
+st.divider()
+
+# =========================
+# INSIGHTS
+# =========================
 
 elif page == "📊 Insights":
 
@@ -480,8 +556,10 @@ elif page == "📊 Insights":
     total_cat = sum(categories.values())
 
     for k,v in categories.items():
-        if total_cat > 0:
-            st.write(f"{k}: {(v/total_cat*100):.1f}%")
+        percent = (v/total_cat*100) if total_cat else 0
+
+        st.progress(percent/100)
+        st.write(f"{k} — {percent:.1f}%")
 
     st.divider()
 
