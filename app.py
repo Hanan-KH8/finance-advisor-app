@@ -441,7 +441,7 @@ st.divider()
 # INSIGHTS
 # =========================
 
-    st.subheader("📊 Category Breakdown")
+st.subheader("📊 Category Breakdown")
 
     categories = {
     "Housing": housing,
@@ -462,7 +462,7 @@ st.divider()
     st.divider()
 
     # ---- WHAT IF ----
-    st.subheader("🔮 Scenario Simulator")
+st.subheader("🔮 Scenario Simulator")
 
     reduction = st.slider("Reduce restaurants (%)", 0, 50, 10)
 
@@ -478,7 +478,7 @@ st.divider()
 
 elif page == "🎯 Goals":
 
-    st.subheader("🎯 Financial Goals")
+st.subheader("🎯 Financial Goals")
 
     goal = st.number_input("Goal amount", 0, 1_000_000, 50000)
     months = st.number_input("Months", 1, 120, 12)
