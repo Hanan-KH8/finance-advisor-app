@@ -200,14 +200,23 @@ def section(title,items):
 def total(items):
     return sum(v for v,_ in items)
 
-def show_card(title,value,color="#fff"):
+def show_card(title, value, icon="💰", color="#ffffff"):
     st.markdown(f"""
-    <div style="padding:16px;border-radius:16px;background:{color};
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:10px;">
-    <div style="color:#666;font-size:13px;">{title}</div>
-    <div style="font-size:24px;font-weight:700;">{value:,.0f} SEK</div>
+    <div style="
+        background: {color};
+        padding: 16px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 10px;
+    ">
+        <div style="font-size:14px; color:#666;">
+            {icon} {title}
+        </div>
+        <div style="font-size:22px; font-weight:600;">
+            {value:,.0f} SEK
+        </div>
     </div>
-    """,unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 def financial_score_engine(income,savings,expenses,loans,freq_data):
     score=100
@@ -380,7 +389,7 @@ page = st.radio("",["🏠 Home","📊 Insights","🎯 Goals","💬 Advisor","�
 # ================================
 if page=="🏠 Home":
 
-    show_card("Balance",net, "#e8f5e9" if net>=0 else "#fdecea")
+    show_card("Balance", net, icon="💳", color="#e8f5e9")
 
     col1,col2=st.columns(2)
     col1.metric("Income",f"{income:,.0f}")
