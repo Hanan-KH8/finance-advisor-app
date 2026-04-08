@@ -220,7 +220,7 @@ def financial_score_engine(
     # Mini Cards
     # -------------------------
     
-    def show_card_html(title, value, icon):
+def show_card_html(title, value, icon):
     return f"""
     <div style="
         background:white;
