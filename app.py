@@ -5,6 +5,34 @@ import streamlit as st
 import pandas as pd
 from supabase import create_client
 
+# ==================================
+# Remove_Streamlit_header
+# ==================================
+
+st.markdown("""
+<style>
+/* Hide Streamlit header */
+[data-testid="stHeader"] {
+    display: none;
+}
+
+/* Hide hamburger menu */
+[data-testid="stToolbar"] {
+    display: none;
+}
+
+/* Hide footer */
+footer {
+    display: none;
+}
+
+/* Remove top padding */
+.block-container {
+    padding-top: 1rem;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # ================================
 # CONFIG
 # ================================
