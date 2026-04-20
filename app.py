@@ -2,12 +2,29 @@
 # IMPORTS
 # ================================
 import streamlit as st
+st.set_page_config(
+    page_title="Finwise",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+hide_st_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 import pandas as pd
 from supabase import create_client
 
 # ==================================
 # Remove_Streamlit_header
 # ==================================
+st.markdown("<div style='padding: 10px;'>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
@@ -38,7 +55,7 @@ footer {
 # ================================
 st.set_page_config(page_title="Finance Advisor", layout="centered")
 
-st.title("💰 Personal Finance Planner")
+st.title("Personal Finance Planner")
 st.info("Efficiently manage your finances for a better future")
 
 # ================================
@@ -292,6 +309,7 @@ income_items = section("💵 Income",[
 ])
 
 loans_items = section("💳 Loans",[
+("Personal","loan_personal",8000),
 ("Mortgage","loan_mort",8000),
 ("Car loan","loan_car",0),
 ("Credit cards","loan_cc",0),
