@@ -245,24 +245,27 @@ def section(title,items):
 def total(items):
     return sum(v for v,_ in items)
 
-def show_card(title, value, icon="💰", color="#ffffff"):
+def show_card(title, value, subtitle="", icon="💰"):
     st.markdown(f"""
     <div style="
-        background: {color};
-        padding: 16px;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        margin-bottom: 10px;
+        background: linear-gradient(135deg, #1A1A1A, #111111);
+        padding: 18px;
+        border-radius: 18px;
+        margin-bottom: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
     ">
-        <div style="font-size:14px; color:#666;">
+        <div style="font-size:13px; color:#AAAAAA;">
             {icon} {title}
         </div>
-        <div style="font-size:22px; font-weight:600;">
+        <div style="font-size:26px; font-weight:700; margin-top:6px; color:white;">
             {value:,.0f} SEK
+        </div>
+        <div style="font-size:12px; color:#666;">
+            {subtitle}
         </div>
     </div>
     """, unsafe_allow_html=True)
-
+    
 def financial_score_engine(income,savings,expenses,loans,freq_data):
     score=100
     insights=[]
@@ -435,21 +438,40 @@ page = st.radio("",["🏠 Home","📊 Insights","🎯 Goals","💬 Advisor","�
 # ================================
 if page=="🏠 Home":
 
-    balance_color = "#e8f5e9" if net >= 0 else "#fdecea"
+    st.markdown("### Overview")
 
-    show_card("Balance", net, icon="💳", color=balance_color)
+    show_card("Balance", net, icon="💳")
 
-    col1,col2=st.columns(2)
-    col1.metric("Income",f"{income:,.0f}")
-    col2.metric("Expenses",f"{expenses:,.0f}")
+    col1, col2 = st.columns(2)
 
-    col3,col4=st.columns(2)
-    col3.metric("Savings",f"{savings:,.0f}")
-    col4.metric("Score",f"{score}/100")
+    with col1:
+        show_card("Income", income, icon="💵")
+
+    with col2:
+        show_card("Expenses", expenses, icon="💸")
+
+    col3, col4 = st.columns(2)
+
+    with col3:
+        show_card("Savings", savings, icon="💰")
+
+    with col4:
+        show_card("Score", score, icon="📊")
 
     if insights:
+        st.markdown("### Insights")
         for i in insights:
-            st.write(i)
+            st.markdown(f"""
+            <div style="
+                background:#1A1A1A;
+                padding:12px;
+                border-radius:12px;
+                margin-bottom:8px;
+                color:#ccc;
+            ">
+                {i}
+            </div>
+            """, unsafe_allow_html=True)
 
 # ================================
 # INSIGHTS
