@@ -23,9 +23,6 @@ from supabase import create_client
 # ==================================
 # Remove_Streamlit_header
 # ==================================
-st.markdown("<div style='padding: 10px;'>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
-
 st.markdown("""
 <style>
 /* Hide Streamlit header */
@@ -53,7 +50,6 @@ footer {
 # ================================
 # CONFIG
 # ================================
-st.set_page_config(page_title="Finance Advisor", layout="centered")
 
 st.title("Personal Finance Planner")
 st.info("Efficiently manage your finances for a better future")
@@ -71,8 +67,8 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 st.markdown("""
 <style>
 .block-container {
-    max-width: 420px;
-    padding-top: 1rem;
+    max-width: 480px;
+    margin: auto;
 }
 
 h1, h2, h3 {
@@ -81,6 +77,22 @@ h1, h2, h3 {
 
 .stMetric {
     text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+section.main > div {
+    padding-top: 0rem;
+}
+
+.stButton button {
+    border-radius: 12px;
+}
+
+input, select {
+    border-radius: 10px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -245,26 +257,6 @@ def section(title,items):
 def total(items):
     return sum(v for v,_ in items)
 
-def show_card(title, value, subtitle="", icon="💰"):
-    st.markdown(f"""
-    <div style="
-        background: linear-gradient(135deg, #1A1A1A, #111111);
-        padding: 18px;
-        border-radius: 18px;
-        margin-bottom: 12px;
-        border: 1px solid rgba(255,255,255,0.05);
-    ">
-        <div style="font-size:13px; color:#AAAAAA;">
-            {icon} {title}
-        </div>
-        <div style="font-size:26px; font-weight:700; margin-top:6px; color:white;">
-            {value:,.0f} SEK
-        </div>
-        <div style="font-size:12px; color:#666;">
-            {subtitle}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
     
 def financial_score_engine(income,savings,expenses,loans,freq_data):
     score=100
@@ -375,27 +367,12 @@ other_items = section("✈️ Other",[
 # ================================
 # TOTALS
 # ================================
+def show_card(title, value, icon="💰"):
+    st.container().markdown(f"""
+**{icon} {title}**
 
-def show_card(title, value, subtitle="", icon="💰", color="#ffffff"):
-    st.markdown(f"""
-    <div style="
-        background: linear-gradient(135deg, {color}, #f8f9fa);
-        padding: 18px;
-        border-radius: 18px;
-        box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-        margin-bottom: 12px;
-    ">
-        <div style="font-size:13px; color:#666;">
-            {icon} {title}
-        </div>
-        <div style="font-size:26px; font-weight:700; margin-top:4px;">
-            {value:,.0f} SEK
-        </div>
-        <div style="font-size:12px; color:#999;">
-            {subtitle}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+### {value:,.0f} SEK
+""")
 
 # ================================
 # CALCULATIONS
@@ -441,37 +418,15 @@ if page=="🏠 Home":
     st.markdown("### Overview")
 
     show_card("Balance", net, icon="💳")
+    show_card("Income", income, icon="💵")
+    show_card("Expenses", expenses, icon="💸")
+    show_card("Savings", savings, icon="💰")
+    show_card("Score", score, icon="📊")
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        show_card("Income", income, icon="💵")
-
-    with col2:
-        show_card("Expenses", expenses, icon="💸")
-
-    col3, col4 = st.columns(2)
-
-    with col3:
-        show_card("Savings", savings, icon="💰")
-
-    with col4:
-        show_card("Score", score, icon="📊")
-
-    if insights:
-        st.markdown("### Insights")
-        for i in insights:
-            st.markdown(f"""
-            <div style="
-                background:#1A1A1A;
-                padding:12px;
-                border-radius:12px;
-                margin-bottom:8px;
-                color:#ccc;
-            ">
-                {i}
-            </div>
-            """, unsafe_allow_html=True)
+if insights:
+    st.markdown("### Insights")
+    for i in insights:
+        st.info(i)
 
 # ================================
 # INSIGHTS
